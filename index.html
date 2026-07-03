@@ -131,8 +131,8 @@
   .search-btn:hover{ background:var(--yellow-dark); }
   @media (max-width:700px){
     .search-box{ flex-direction:column; padding:10px; gap:4px; }
-    .search-box select, .search-box input{ border-right:none; border-bottom:1px solid var(--border); width:100%; border-radius:0; }
-    .search-btn{ width:100%; padding:14px; margin-top:6px; }
+    .search-box select, .search-box input{ flex:none; border-right:none; border-bottom:1px solid var(--border); width:100%; border-radius:0; }
+    .search-btn{ flex:none; width:100%; padding:14px; margin-top:6px; border-radius:10px; }
   }
 
   .cat-chip-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:26px 0 46px; }
@@ -995,7 +995,7 @@
   document.getElementById('hs-ara').addEventListener('click', () => {
     const kat = document.getElementById('hs-kategori').value;
     const ilce = document.getElementById('hs-ilce').value;
-    const kelime = document.getElementById('hs-kelime').value.trim().toLowerCase();
+    const kelime = document.getElementById('hs-kelime').value.trim().toLocaleLowerCase('tr');
     const konutTipleri = ['Daire','Villa','Müstakil Ev'];
     let visible = 0;
     document.querySelectorAll('.listing-row').forEach(row => {
@@ -1005,7 +1005,7 @@
       else if (kat === 'İş Yeri') katMatch = (emlak === 'Ticari' || emlak === 'Ofis');
       else if (kat === 'Arsa') katMatch = (emlak === 'Arsa');
       const ilceMatch = !ilce || row.dataset.ilce === ilce;
-      const text = (row.textContent || '').toLowerCase();
+      const text = (row.textContent || '').toLocaleLowerCase('tr');
       const kelimeMatch = !kelime || text.includes(kelime);
       const match = katMatch && ilceMatch && kelimeMatch;
       row.classList.toggle('hidden-row', !match);
