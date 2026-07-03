@@ -713,22 +713,25 @@
       <div class="info-line"><div class="k">SAAT</div><div>Pzt–Cmt, 09:00–19:00</div></div>
     </div>
     <form id="leadForm">
+      <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+      <input type="hidden" name="subject" value="Parla Gayrimenkul — Yeni Talep">
+      <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
       <div class="field-row">
-        <div><label for="name">AD SOYAD</label><input id="name" required></div>
-        <div><label for="phone">TELEFON</label><input id="phone" required></div>
+        <div><label for="name">AD SOYAD</label><input id="name" name="name" required></div>
+        <div><label for="phone">TELEFON</label><input id="phone" name="phone" required></div>
       </div>
       <div class="field-row">
         <div><label for="interest">İLGİ ALANI</label>
-          <select id="interest">
+          <select id="interest" name="ilgi_alani">
             <option>Satılık konut</option><option>Kiralık konut</option><option>Ticari / ofis</option><option>Arsa</option>
           </select>
         </div>
-        <div><label for="budget">BÜTÇE (₺)</label><input id="budget" placeholder="Örn. 4.000.000"></div>
+        <div><label for="budget">BÜTÇE (₺)</label><input id="budget" name="butce" placeholder="Örn. 4.000.000"></div>
       </div>
-      <div><label for="message">MESAJ</label><textarea id="message" placeholder="Bölge, oda sayısı ve diğer tercihleriniz"></textarea></div>
+      <div><label for="message">MESAJ</label><textarea id="message" name="mesaj" placeholder="Bölge, oda sayısı ve diğer tercihleriniz"></textarea></div>
       <button type="submit" class="btn-submit">Talebi Gönder</button>
       <div class="submit-msg" id="submitMsg"></div>
-      <div class="form-note">Bu form şu an demo amaçlıdır — gerçek taleplerin size ulaşması için bir e-posta servisine (ör. Formspree) veya backend'e bağlanması gerekir.</div>
+      <div class="form-note">Talepler Web3Forms üzerinden info@parlagayrimenkul.com adresine e-posta olarak iletilir.</div>
     </form>
   </div>
 </section>
@@ -919,10 +922,40 @@
     });
   });
 
-  document.getElementById('leadForm').addEventListener('submit', (e) => {
+  document.getElementById('leadForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    document.getElementById('submitMsg').textContent = 'Talebiniz alındı — ekibimiz en kısa sürede dönüş yapacaktır. (demo)';
-    e.target.reset();
+    const form = e.target;
+    const submitMsg = document.getElementById('submitMsg');
+    const submitBtn = form.querySelector('.btn-submit');
+    const accessKey = form.access_key.value;
+    if (!accessKey || accessKey === 'YOUR_WEB3FORMS_ACCESS_KEY') {
+      submitMsg.style.color = 'var(--red)';
+      submitMsg.textContent = 'Form henüz bir e-posta servisine bağlanmadı. Lütfen doğrudan 0531 736 64 00 numarasından ulaşın.';
+      return;
+    }
+    submitBtn.disabled = true;
+    submitMsg.style.color = 'var(--text-soft)';
+    submitMsg.textContent = 'Gönderiliyor…';
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(form)))
+      });
+      const data = await res.json();
+      if (data.success) {
+        submitMsg.style.color = 'var(--green)';
+        submitMsg.textContent = 'Talebiniz alındı — ekibimiz en kısa sürede dönüş yapacaktır.';
+        form.reset();
+      } else {
+        throw new Error(data.message || 'Gönderim başarısız');
+      }
+    } catch (err) {
+      submitMsg.style.color = 'var(--red)';
+      submitMsg.textContent = 'Gönderim sırasında bir hata oluştu. Lütfen 0531 736 64 00 numarasından bize ulaşın.';
+    } finally {
+      submitBtn.disabled = false;
+    }
   });
 
   const toggle = document.getElementById('ai-toggle');
@@ -935,8 +968,6 @@
   toggle.addEventListener('click', () => panel.classList.toggle('open'));
   closeBtn.addEventListener('click', () => panel.classList.remove('open'));
 
-  const history = [];
-
   function addMsg(text, cls) {
     const div = document.createElement('div');
     div.className = 'msg ' + cls;
@@ -946,34 +977,42 @@
     return div;
   }
 
-  async function sendMessage() {
+  // Basit anahtar kelime tabanlı asistan — harici bir API'ye bağlı değildir,
+  // bu yüzden statik sitede API anahtarı gizleme sorunu olmadan her zaman çalışır.
+  const AI_RULES = [
+    { keys: ['edremit', 'altınkum', 'akçay', 'sarıkız', 'güre'], reply: 'Edremit bölgesinde Altınkum, Akçay, Sarıkız ve Güre başta olmak üzere geniş bir portföyümüz var. "Bölgeye Göre Gözat" bölümünden ilanlara ulaşabilir ya da detaylı filtreden ilçe olarak Edremit\'i seçebilirsiniz.' },
+    { keys: ['havran', 'zeytinlik', 'tarla'], reply: 'Havran bölgesinde özellikle zeytinlik ve tarım arazileri konusunda güncel ilanlarımız var. Detaylı filtreden ilçe olarak Havran\'ı, emlak tipi olarak Arsa\'yı seçerek listeleyebilirsiniz.' },
+    { keys: ['burhaniye'], reply: 'Burhaniye\'de sahil şeridi ve zeytinlikleriyle öne çıkan müstakil villa seçeneklerimiz mevcut. Detaylı filtreden ilçe olarak Burhaniye\'yi seçebilirsiniz.' },
+    { keys: ['ivrindi', 'i̇vrindi', 'bandırma'], reply: 'İvrindi ve Bandırma bölgelerinde tarım arazisi ve yatırımlık arsa ilanlarımız bulunuyor. Detaylı filtreden ilgili ilçeyi seçerek görebilirsiniz.' },
+    { keys: ['villa'], reply: 'Villa portföyümüz için "Öne Çıkan İlanlar" bölümündeki Villa sekmesine bakabilir ya da detaylı filtreden emlak tipi olarak Villa\'yı seçebilirsiniz.' },
+    { keys: ['arsa', 'tarla'], reply: 'Arsa/tarla ilanlarımızı detaylı filtreden emlak tipi olarak Arsa\'yı seçip m² ve fiyat aralığına göre daraltabilirsiniz.' },
+    { keys: ['daire', 'konut', 'ev'], reply: 'Daire ve konut ilanlarımızda oda sayısı, bütçe ve bölgeye göre filtreleme yapabilirsiniz. Detaylı Filtre panelinden oda sayısı ve fiyat aralığını seçmeniz yeterli.' },
+    { keys: ['kredi', 'kredili'], reply: 'Krediye uygun ilanları görmek için Detaylı Filtre panelindeki "Krediye Uygun" kutucuğunu işaretleyebilirsiniz.' },
+    { keys: ['fiyat', 'bütçe', 'kaç para', 'ne kadar'], reply: 'Bütçenizi ve tercih ettiğiniz bölgeyi belirtirseniz size en uygun ilanları önerebiliriz. Bunun için sayfanın altındaki İletişim formunu doldurmanız yeterli — ekibimiz 48 saat içinde dönüş yapıyor.' },
+    { keys: ['randevu', 'görüşme', 'ziyaret', 'gezmek'], reply: 'Yerinde inceleme için randevu talebinizi İletişim formundan iletebilir ya da 0531 736 64 00 numaralı telefondan bize ulaşabilirsiniz.' },
+    { keys: ['telefon', 'iletişim', 'adres', 'nerede', 'numara'], reply: 'Merkez ofisimiz Altınkum Mah. Hakimiyet Cad. No:54/B, Edremit / Balıkesir adresinde. Telefon: 0531 736 64 00. Talebinizi İletişim formundan da bırakabilirsiniz.' },
+    { keys: ['merhaba', 'selam', 'iyi günler'], reply: 'Merhaba! Balıkesir/Edremit bölgesindeki portföyümüz hakkında sorularınızı yanıtlayabilirim. Bölge, bütçe veya emlak tipi belirtirseniz size uygun ilanlara yönlendirebilirim.' },
+    { keys: ['teşekkür', 'sağol', 'sağ ol'], reply: 'Rica ederim! Başka bir sorunuz olursa buradayım.' }
+  ];
+
+  function findAiReply(text) {
+    const lower = text.toLowerCase('tr');
+    for (const rule of AI_RULES) {
+      if (rule.keys.some((k) => lower.includes(k))) return rule.reply;
+    }
+    return 'Bu konuda size en doğru bilgiyi ekibimiz verebilir. Bölge, bütçe ve emlak tipi (daire, villa, arsa vb.) belirterek İletişim formunu doldurursanız 48 saat içinde dönüş yaparız, ya da 0531 736 64 00 numaralı telefondan bize ulaşabilirsiniz.';
+  }
+
+  function sendMessage() {
     const text = input.value.trim();
     if (!text) return;
     addMsg(text, 'user');
-    history.push({ role: 'user', content: text });
     input.value = '';
     const typing = addMsg('yazıyor…', 'typing');
-
-    try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 400,
-          system: "Sen Parla Gayrimenkul adlı Edremit (Balıkesir) merkezli bir emlak ofisinin sanal asistanısın. Kısa, net ve samimi bir dille Türkçe yanıt ver. Satılık/kiralık konut, ofis ve arsa portföyü hakkında genel sorulara yardımcı ol, bölge ve bütçe tercihi sor, ve kullanıcıyı sayfadaki 'İletişim' formunu doldurmaya yönlendir. Kesin fiyat veya stok garantisi verme; gerçek bilgi için ekiple görüşmesi gerektiğini belirt.",
-          messages: history
-        })
-      });
-      const data = await response.json();
+    setTimeout(() => {
       typing.remove();
-      const reply = (data.content || []).map(b => b.text || '').join('') || 'Şu an yanıt veremiyorum, lütfen tekrar deneyin.';
-      addMsg(reply, 'bot');
-      history.push({ role: 'assistant', content: reply });
-    } catch (err) {
-      typing.remove();
-      addMsg('Bağlantı hatası oluştu. Lütfen tekrar deneyin.', 'bot');
-    }
+      addMsg(findAiReply(text), 'bot');
+    }, 400);
   }
 
   // ---- Danışman panelinden (ilan-giris.html) eklenen ilanları yükle ----
