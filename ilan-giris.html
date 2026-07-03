@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İlan Giriş Platformu — Parla Gayrimenkul</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231B2A3C%22/><text x=%2250%22 y=%2272%22 font-size=%2264%22 font-family=%22Arial%22 font-weight=%22900%22 fill=%22%23FFCB05%22 text-anchor=%22middle%22>P</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Roboto+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF; --bg-alt:#F4F4F2; --bg-panel:#EFEFEC;
+    --text:#222222; --text-soft:#6E6E6E;
+    --yellow:#FFCB05; --yellow-dark:#E8B600;
+    --navy:#1B2A3C; --link:#0B5FA5; --green:#1E8E3E; --border:#E1E1DD; --red:#C4392B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg-alt); color:var(--text); font-family:'Roboto',Arial,sans-serif; font-size:15px; line-height:1.45; }
+  h1,h2,h3{ font-family:'Roboto Condensed',Arial,sans-serif; font-weight:700; }
+  a{ color:inherit; text-decoration:none; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 24px; }
+  @media (max-width:640px){ .wrap{ padding:0 16px; } }
+
+  header{ background:#fff; border-bottom:3px solid var(--yellow); }
+  .head-row{ display:flex; align-items:center; justify-content:space-between; height:70px; }
+  .logo{ font-family:'Roboto Condensed'; font-weight:900; font-size:1.4rem; color:var(--navy); }
+  .logo span{ color:var(--yellow-dark); }
+  .back-link{ font-size:0.86rem; color:var(--link); font-weight:500; }
+  .back-link:hover{ text-decoration:underline; }
+
+  .page-head{ background:var(--navy); color:#fff; padding:34px 0; }
+  .page-head h1{ font-size:1.7rem; }
+  .page-head p{ color:#B8C4D0; font-size:0.9rem; margin-top:6px; }
+
+  main{ padding:36px 0 80px; }
+  .layout{ display:grid; grid-template-columns:200px 1fr; gap:32px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } }
+
+  .toc{ position:sticky; top:20px; background:#fff; border:1px solid var(--border); padding:16px; }
+  .toc h4{ font-size:0.74rem; text-transform:uppercase; color:var(--text-soft); margin-bottom:10px; }
+  .toc a{ display:block; font-size:0.82rem; padding:6px 0; color:var(--text); border-bottom:1px solid var(--border); }
+  .toc a:last-child{ border-bottom:none; }
+  .toc a:hover{ color:var(--link); }
+  @media (max-width:900px){ .toc{ position:static; display:flex; flex-wrap:wrap; gap:4px 14px; } .toc a{ border:none; padding:4px 0; } }
+
+  .panel{ background:#fff; border:1px solid var(--border); margin-bottom:20px; scroll-margin-top:16px; }
+  .panel-head{ background:var(--bg-panel); border-bottom:1px solid var(--border); padding:12px 20px; display:flex; align-items:center; gap:10px; }
+  .panel-head .num{ background:var(--navy); color:#fff; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.74rem; font-weight:700; flex-shrink:0; }
+  .panel-head h3{ font-size:0.98rem; color:var(--navy); }
+  .panel-body{ padding:20px; }
+
+  .field-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .field-grid.c2{ grid-template-columns:repeat(2,1fr); }
+  .field-grid.c3{ grid-template-columns:repeat(3,1fr); }
+  @media (max-width:820px){ .field-grid, .field-grid.c2, .field-grid.c3{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:520px){ .field-grid, .field-grid.c2, .field-grid.c3{ grid-template-columns:1fr; } }
+
+  .f label{ font-size:0.72rem; font-weight:700; color:var(--text-soft); text-transform:uppercase; display:block; margin-bottom:6px; }
+  .f input, .f select, .f textarea{
+    width:100%; border:1px solid var(--border); padding:10px; font-family:'Roboto',sans-serif;
+    font-size:0.88rem; color:var(--text); background:#fff;
+  }
+  .f input:focus, .f select:focus, .f textarea:focus{ outline:none; border-color:var(--yellow-dark); }
+  .f textarea{ min-height:70px; resize:vertical; }
+
+  .radio-row{ display:flex; gap:18px; flex-wrap:wrap; margin-top:4px; }
+  .radio-row label{ display:flex; align-items:center; gap:6px; font-size:0.86rem; font-weight:400; text-transform:none; color:var(--text); }
+
+  .check-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px 16px; }
+  @media (max-width:820px){ .check-grid{ grid-template-columns:repeat(3,1fr); } }
+  @media (max-width:600px){ .check-grid{ grid-template-columns:repeat(2,1fr); } }
+  .check-grid label{ display:flex; align-items:center; gap:7px; font-size:0.84rem; color:var(--text); }
+
+  .sub-head{ font-size:0.78rem; font-weight:700; color:var(--navy); text-transform:uppercase; margin:18px 0 10px; padding-top:14px; border-top:1px solid var(--border); }
+  .sub-head:first-child{ margin-top:0; padding-top:0; border-top:none; }
+
+  .platform-row{ display:flex; gap:20px; flex-wrap:wrap; }
+  .platform-row label{ display:flex; align-items:center; gap:7px; font-size:0.86rem; background:var(--bg-panel); padding:8px 14px; border:1px solid var(--border); }
+
+  .save-bar{ position:sticky; bottom:0; background:#fff; border-top:2px solid var(--yellow); padding:16px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:4px; }
+  .btn-save{ background:var(--yellow); color:var(--navy); font-weight:700; border:none; padding:13px 30px; cursor:pointer; font-size:0.92rem; }
+  .btn-save:hover{ background:var(--yellow-dark); }
+  .save-msg{ font-size:0.86rem; color:var(--green); font-weight:500; }
+
+  .saved-list{ margin-top:36px; }
+  .saved-list h3{ font-size:1.1rem; color:var(--navy); margin-bottom:14px; }
+  .saved-row{ display:flex; justify-content:space-between; align-items:center; gap:14px; background:#fff; border:1px solid var(--border); padding:14px 18px; margin-bottom:8px; flex-wrap:wrap; }
+  .saved-row .info{ font-size:0.86rem; }
+  .saved-row .info b{ color:var(--navy); }
+  .saved-row .meta{ font-size:0.76rem; color:var(--text-soft); margin-top:2px; }
+  .saved-row .del{ background:none; border:1px solid var(--border); color:var(--red); padding:7px 14px; cursor:pointer; font-size:0.78rem; }
+  .saved-row .del:hover{ background:var(--red); color:#fff; border-color:var(--red); }
+  .empty-note{ font-size:0.86rem; color:var(--text-soft); font-style:italic; }
+
+  .import-panel{ background:#fff; border:1px solid var(--border); border-top:3px solid var(--yellow); padding:20px; margin-bottom:24px; }
+  .import-panel h3{ font-size:0.98rem; color:var(--navy); margin-bottom:6px; }
+  .import-panel p{ font-size:0.84rem; color:var(--text-soft); margin-bottom:14px; }
+  .import-row{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .import-row input[type="file"]{ font-size:0.84rem; }
+  .btn-import{ background:var(--navy); color:#fff; font-weight:700; border:none; padding:10px 22px; cursor:pointer; font-size:0.84rem; }
+  .btn-import:hover{ background:#25384E; }
+  .import-msg{ font-size:0.82rem; margin-top:10px; }
+  .import-msg.ok{ color:var(--green); }
+  .import-msg.err{ color:var(--red); }
+  .import-template{ font-size:0.78rem; color:var(--link); cursor:pointer; text-decoration:underline; background:none; border:none; padding:0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head-row">
+    <a href="index.html" class="logo">PARLA<span>.</span></a>
+    <a href="index.html" class="back-link">← Web Sitesine Dön</a>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="wrap">
+    <h1>İlan Giriş Platformu</h1>
+    <p>Danışmanların yeni portföy kaydı açması için detaylı ilan giriş formu.</p>
+  </div>
+</div>
+
+<main>
+  <div class="wrap layout">
+
+    <nav class="toc">
+      <h4>Bölümler</h4>
+      <a href="#import">↑ Toplu İçe Aktar</a>
+      <a href="#s1">1. Portföy Bilgileri</a>
+      <a href="#s2">2. Mal Sahibi Bilgileri</a>
+      <a href="#s3">3. Taşınmaz Bilgileri</a>
+      <a href="#s4">4. Finans Bilgileri</a>
+      <a href="#s5">5. Detay Bilgileri</a>
+      <a href="#s6">6. İç Özellikler</a>
+      <a href="#s7">7. Dış Özellikler</a>
+      <a href="#s8">8. Konut Tipi</a>
+      <a href="#s9">9. Erişilebilirlik</a>
+      <a href="#s10">10. Evrak Kontrol</a>
+      <a href="#s11">11. Ofis Kontrol</a>
+      <a href="#s12">12. Yayın Kanalları</a>
+      <a href="#s13">13. Danışman Notu</a>
+    </nav>
+
+    <form id="listingForm">
+
+      <div class="import-panel" id="import">
+        <h3>Toplu İlan İçe Aktar (JSON)</h3>
+        <p>Sahibinden'in "Ofisim → İlan Aktarımı" ekranından indirdiğin dosyayı (veya aşağıdaki şablona uygun hazırladığın bir .json dosyasını) buradan yükleyebilirsin. Dosya, portföy nesnelerinden oluşan bir dizi (array) olmalı. <button type="button" class="import-template" id="showTemplate">Şablonu göster</button></p>
+        <div class="import-row">
+          <input type="file" id="jsonFile" accept=".json,application/json">
+          <button type="button" class="btn-import" id="jsonImportBtn">İçe Aktar</button>
+        </div>
+        <div class="import-msg" id="importMsg"></div>
+        <pre id="templateBox" style="display:none; background:var(--bg-panel); padding:12px; margin-top:12px; font-size:0.76rem; overflow-x:auto; border:1px solid var(--border);">[
+  {
+    "portfoyNo": "P-2026-001",
+    "danisman": "Ad Soyad",
+    "tasinmazTuru": "Daire",
+    "ilanTuru": "Satılık",
+    "ilce": "Edremit",
+    "mahalle": "Özlüce",
+    "istenenFiyat": "4850000",
+    "m2Net": "142",
+    "odaSayisi": "3+1"
+  }
+]</pre>
+      </div>
+
+      <div class="panel" id="s1">
+        <div class="panel-head"><div class="num">1</div><h3>Portföy Bilgileri</h3></div>
+        <div class="panel-body">
+          <div class="field-grid">
+            <div class="f"><label>Portföy No</label><input id="portfoyNo" placeholder="Otomatik / manuel"></div>
+            <div class="f"><label>Tarih</label><input type="date" id="tarih"></div>
+            <div class="f"><label>Danışman</label><input id="danisman" placeholder="Ad Soyad"></div>
+            <div class="f"><label>Yetki Türü</label>
+              <div class="radio-row">
+                <label><input type="radio" name="yetkiTuru" value="Tek Yetki"> Tek Yetki</label>
+                <label><input type="radio" name="yetkiTuru" value="Genel Yetki"> Genel Yetki</label>
+              </div>
+            </div>
+            <div class="f"><label>Yetki Başlangıç</label><input type="date" id="yetkiBaslangic"></div>
+            <div class="f"><label>Yetki Bitiş</label><input type="date" id="yetkiBitis"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="s2">
+        <div class="panel-head"><div class="num">2</div><h3>Mal Sahibi Bilgileri</h3></div>
+        <div class="panel-body">
+          <div class="field-grid">
+            <div class="f"><label>Ad Soyad</label><input id="malSahibiAd"></div>
+            <div class="f"><label>Telefon</label><input id="malSahibiTel"></div>
+            <div class="f"><label>Alternatif Telefon</label><input id="malSahibiTel2"></div>
+            <div class="f"><label>WhatsApp</label><input id="malSahibiWA"></div>
+            <div class="f" style="grid-column:span 2;"><label>E-posta</label><input type="email" id="malSahibiMail"></div>
+            <div class="f" style="grid-column:span 2;"><label>Adres</label><input id="malSahibiAdres"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="s3">
+        <div class="panel-head"><div class="num">3</div><h3>Taşınmaz Bilgileri</h3></div>
+        <div class="panel-body">
+          <div class="field-grid c3">
+            <div class="f"><label>Taşınmaz Türü</label>
+              <select id="tasinmazTuru"><option>Daire</option><option>Villa</option><option>Arsa</option><option>İşyeri</option><option>Diğer</option></select>
+            </div>
+            <div class="f"><label>İlan Türü</label>
+              <select id="ilanTuru"><option>Satılık</option><option>Kiralık</option></select>
+            </div>
+            <div class="f"><label>İl</label><input id="il" value="Balıkesir"></div>
+          </div>
+          <div class="field-grid c3" style="margin-top:14px;">
+            <div class="f"><label>İlçe</label>
+              <select id="ilce">
+                <option value="">Seçiniz</option>
+                <option value="Edremit">Edremit</option>
+                <option value="Havran">Havran</option>
+                <option value="Burhaniye">Burhaniye</option>
+                <option value="İvrindi">İvrindi</option>
+                <option value="Bandırma">Bandırma</option>
+                <option value="Diğer">Diğer</option>
+              </select>
+            </div>
+            <div class="f"><label>Mahalle</label><select id="mahalle"><option value="">Önce ilçe seçin</option></select></div>
+            <div class="f"><label>Cadde / Sokak</label><input id="cadde"></div>
+          </div>
+          <div class="field-grid c3" style="margin-top:14px;">
+            <div class="f"><label>Kapı No</label><input id="kapiNo"></div>
+            <div class="f"><label>Ada</label><input id="ada"></div>
+            <div class="f"><label>Parsel</label><input id="parsel"></div>
+          </div>
+          <div class="field-grid c3" style="margin-top:14px;">
+            <div class="f"><label>Pafta</label><input id="pafta"></div>
+            <div class="f"><label>Bağımsız Bölüm No</label><input id="bagimsizNo"></div>
+            <div class="f"><label>Bina No</label><input id="binaNo"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="s4">
+        <div class="panel-head"><div class="num">4</div><h3>Finans Bilgileri</h3></div>
+        <div class="panel-body">
+          <div class="field-grid">
+            <div class="f"><label>İstenen Fiyat (₺)</label><input type="number" id="istenenFiyat"></div>
+            <div class="f"><label>Son Pazarlık Limiti (₺)</label><input type="number" id="pazarlikLimiti"></div>
+            <div class="f"><label>Komisyon Oranı (%)</label><input type="number" id="komisyon"></div>
+            <div class="f"><label>Aidat (₺)</label><input type="number" id="aidatFinans"></div>
+            <div class="f"><label>KDV Durumu</label>
+              <div class="radio-row"><label><input type="radio" name="kdv" value="Var"> Var</label><label><input type="radio" name="kdv" value="Yok"> Yok</label></div>
+            </div>
+            <div class="f"><label>Takasa Açık mı?</label>
+              <div class="radio-row"><label><input type="radio" name="takas" value="Evet"> Evet</label><label><input type="radio" name="takas" value="Hayır"> Hayır</label></div>
+            </div>
+            <div class="f" style="grid-column:span 2;"><label>Takas Beklentisi</label><input id="takasBeklentisi"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="s5">
+        <div class="panel-head"><div class="num">5</div><h3>Detay Bilgileri</h3></div>
+        <div class="panel-body">
+          <div class="field-grid">
+            <div class="f"><label>m² (Brüt)</label><input type="number" id="m2Brut"></div>
+            <div class="f"><label>m² (Net)</label><input type="number" id="m2Net"></div>
+            <div class="f"><label>Bina Yaşı</label><input type="number" id="binaYasi"></div>
+            <div class="f"><label>Oda Sayısı</label>
+              <select id="odaSayisi"><option>1+0</option><option>1+1</option><option>2+1</option><option>3+1</option><option>4+1</option><option>5+2</option><option>Diğer</option></select>
+            </div>
+            <div class="f"><label>Salon Sayısı</label><input type="number" id="salonSayisi"></div>
+            <div class="f"><label>Banyo Sayısı</label><input type="number" id="banyoSayisi"></div>
+            <div class="f"><label>WC Sayısı</label><input type="number" id="wcSayisi"></div>
+            <div class="f"><label>Balkon Sayısı</label><input type="number" id="balkonSayisi"></div>
+            <div class="f"><label>Kat</label><input type="number" id="kat"></div>
+            <div class="f"><label>Kat Sayısı</label><input type="number" id="katSayisi"></div>
+            <div class="f"><label>Otopark</label>
+              <select id="otopark"><option>Yok</option><option>Açık Otopark</option><option>Kapalı Otopark</option></select>
+            </div>
+            <div class="f"><label>Asansör</label>
+              <div class="radio-row"><label><input type="radio" name="asansor" value="Var"> Var</label><label><input type="radio" name="asansor" value="Yok"> Yok</label></div>
+            </div>
+            <div class="f"><label>Eşyalı</label>
+              <div class="radio-row"><label><input type="radio" name="esyali" value="Evet"> Evet</label><label><input type="radio" name="esyali" value="Hayır"> Hayır</label></div>
+            </div>
+            <div class="f"><label>Kullanım Durumu</label>
+              <select id="kullanimDurumu"><option>Boş</option><option>Kiracılı</option><option>Mülk Sahibi Oturuyor</option></select>
+            </div>
+            <div class="f"><label>Tapu Durumu</label>
+              <select id="tapuDurumu"><option>Kat Mülkiyeti</option><option>Kat İrtifakı</option><option>Hisseli Tapu</option><option>Müstakil Tapu</option></select>
+            </div>
+            <div class="f"><label>Enerji Kimlik Belgesi</label>
+              <div class="radio-row"><label><input type="radio" name="ekb" value="Var"> Var</label><label><input type="radio" name="ekb" value="Yok"> Yok</label></div>
+            </div>
+            <div class="f"><label>Krediye Uygun mu?</label>
+              <div class="radio-row"><label><input type="radio" name="krediUygun" value="Evet"> Evet</label><label><input type="radio" name="krediUygun" value="Hayır"> Hayır</label></div>
+            </div>
+            <div class="f"><label>Taşınmaz Numarası (UAVT)</label><input id="tasinmazNo"></div>
+          </div>
+
+          <div class="sub-head">Isıtma Seçenekleri</div>
+          <div class="check-grid">
+            <label><input type="checkbox"> Doğalgaz (Kombi)</label>
+            <label><input type="checkbox"> Doğalgaz (Merkezi)</label>
+            <label><input type="checkbox"> Elektrikli</label>
+            <label><input type="checkbox"> Klima</label>
+            <label><input type="checkbox"> Soba</label>
+            <label><input type="checkbox"> Yerden Isıtma</label>
+          </div>
+
+          <div class="sub-head">Mutfak Seçenekleri</div>
+          <div class="check-grid">
+            <label><input type="checkbox"> Açık (Amerikan)</label>
+            <label><input type="checkbox"> Kapalı (Ayrı Mutfak)</label>
+            <label><input type="checkbox"> Ankastre</label>
+            <label><input type="checkbox"> Laminat Tezgah</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="s6">
+        <div class="panel-head"><div class="num">6</div><h3>İç Özellikler</h3></div>
+        <div class="panel-body">
+          <div class="check-grid">
+            <label><input type="checkbox"> ADSL / Fiber İnternet</label>
+            <label><input type="checkbox"> Akıllı Ev Sistemi</label>
+            <label><input type="checkbox"> Alarm (Hırsız)</label>
+            <label><input type="checkbox"> Alarm (Yangın)</label>
+            <label><input type="checkbox"> Ankastre Fırın</label>
+            <label><input type="checkbox"> Amerikan Kapı / Çelik Kapı</label>
+            <label><input type="checkbox"> Ahşap / Alüminyum Doğrama</label>
+            <label><input type="checkbox"> Asma Tavan</label>
+            <label><input type="checkbox"> Barbekü</label>
+            <label><input type="checkbox"> Beyaz Eşya</label>
+            <label><input type="checkbox"> Bulaşık Makinesi</label>
+            <label><input type="checkbox"> Çamaşır Makinesi / Odası</label>
+            <label><input type="checkbox"> Duşakabin</label>
+            <label><input type="checkbox"> Ebeveyn Banyosu</label>
+            <label><input type="checkbox"> Giyinme Odası</label>
+            <label><input type="checkbox"> Gömme Dolap</label>
+            <label><input type="checkbox"> Hilton Banyo</label>
+            <label><input type="checkbox"> Intercom / Görüntülü Diyafon</label>
+            <label><input type="checkbox"> Jakuzi</label>
+            <label><input type="checkbox"> Kiler</label>
+            <label><input type="checkbox"> Kombi</label>
+            <label><input type="checkbox"> Küvet</label>
+            <label><input type="checkbox"> Laminat / Parke Zemin</label>
+            <label><input type="checkbox"> Merkezi Uydu Sistemi</label>
+            <label><input type="checkbox"> PVC Doğrama</label>
+            <label><input type="checkbox"> Panjur / Jaluzi</label>
+            <label><input type="checkbox"> Seramik Zemin</label>
+            <label><input type="checkbox"> Set Üstü Ocak</label>
+            <label><input type="checkbox"> Spot Aydınlatma</label>
+            <label><input type="checkbox"> Şömine</label>
+            <label><input type="checkbox"> Teras</label>
+            <label><input type="checkbox"> Vestiyer</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="s7">
+        <div class="panel-head"><div class="num">7</div><h3>Dış Özellikler</h3></div>
+        <div class="panel-body">
+          <div class="check-grid">
+            <label><input type="checkbox"> 24 Saat Güvenlik</label>
+            <label><input type="checkbox"> Açık / Kapalı Otopark</label>
+            <label><input type="checkbox"> Apartman Görevlisi</label>
+            <label><input type="checkbox"> Buhar Odası</label>
+            <label><input type="checkbox"> Çocuk Oyun Parkı</label>
+            <label><input type="checkbox"> Hamam</label>
+            <label><input type="checkbox"> Hidrofor</label>
+            <label><input type="checkbox"> Jeneratör</label>
+            <label><input type="checkbox"> Kamera Sistemi</label>
+            <label><input type="checkbox"> Kreş</label>
+            <label><input type="checkbox"> Müstakil Havuzlu</label>
+            <label><input type="checkbox"> Sauna</label>
+            <label><input type="checkbox"> Ses Yalıtımlı</label>
+            <label><input type="checkbox"> Site İçinde</label>
+            <label><input type="checkbox"> Spor Alanı</label>
+            <label><input type="checkbox"> Su Deposu</label>
+            <label><input type="checkbox"> Tenis Kortu</label>
+            <label><input type="checkbox"> Uydu</label>
+            <label><input type="checkbox"> Yangın Merdiveni</label>
+            <label><input type="checkbox"> Yüzme Havuzu (Açık)</label>
+            <label><input type="checkbox"> Yüzme Havuzu (Kapalı)</label>
+          </div>
+          <div class="sub-head">Muhit Özellikleri</div>
+          <div class="check-grid">
+            <label><input type="checkbox"> Alışveriş Merkezi</label>
+            <label><input type="checkbox"> Belediye</label>
+            <label><input type="checkbox"> Cami</label>
+            <label><input type="checkbox"> Denize Sıfır</label>
+            <label><input type="checkbox"> Eczane</label>
+            <label><input type="checkbox"> Hastane</label>
+            <label><input type="checkbox"> İlkokul / Ortaokul</label>
+            <label><input type="checkbox"> Lise / Üniversite</label>
+            <label><input type="checkbox"> Market</label>
+            <label><input type="checkbox"> Park</label>
+            <label><input type="checkbox"> Polis Merkezi</label>
+            <label><input type="checkbox"> Sağlık Ocağı</label>
+          </div>
+          <div class="sub-head">Ulaşım Özellikleri</div>
+          <div class="check-grid">
+            <label><input type="checkbox"> Anayol</label>
+            <label><input type="checkbox"> Cadde</label>
+            <label><input type="checkbox"> Metro</label>
+            <label><input type="checkbox"> Metrobüs</label>
+            <label><input type="checkbox"> Otobüs Durağı</label>
+            <label><input type="checkbox"> Tramvay</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="s8">
+        <div class="panel-head"><div class="num">8</div><h3>Konut Tipi</h3></div>
+        <div class="panel-body">
+          <div class="check-grid">
+            <label><input type="radio" name="konutTipi"> Daire</label>
+            <label><input type="radio" name="konutTipi"> Rezidans</label>
+            <label><input type="radio" name="konutTipi"> Müstakil Ev / Villa</label>
+            <label><input type="radio" name="konutTipi"> Yazlık</label>
+            <label><input type="radio" name="konutTipi"> Diğer</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="s9">
+        <div class="panel-head"><div class="num">9</div><h3>Engelli ve Yaşlıya Uygunluk</h3></div>
+        <div class="panel-body">
+          <div class="radio-row">
+            <label><input type="radio" name="engelli" value="Evet"> Evet</label>
+            <label><input type="radio" name="engelli" value="Hayır"> Hayır</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="s10">
+        <div class="panel-head"><div class="num">10</div><h3>Evrak Kontrol Listesi</h3></div>
+        <div class="panel-body">
+          <div class="check-grid">
+            <label><input type="checkbox"> Tapu</label>
+            <label><input type="checkbox"> Kimlik</label>
+            <label><input type="checkbox"> DASK</label>
+            <label><input type="checkbox"> Enerji Kimlik Belgesi</label>
+            <label><input type="checkbox"> İskan</label>
+            <label><input type="checkbox"> Mimari Proje</label>
+            <label><input type="checkbox"> Vergi Borcu Yok Yazısı</label>
+            <label><input type="checkbox"> Yapı Kullanma İzin Belgesi</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="s11">
+        <div class="panel-head"><div class="num">11</div><h3>Ofis Kontrol Listesi</h3></div>
+        <div class="panel-body">
+          <div class="field-grid c2">
+            <div class="f"><label>Anahtar Durumu</label>
+              <select><option>Ofiste</option><option>Mal Sahibinde</option><option>Kiracıda</option></select>
+            </div>
+            <div class="f"><label>Randevu Şekli</label>
+              <select><option>1 Saat Önce Ara</option><option>Direkt Göster</option><option>Anahtarla Al</option></select>
+            </div>
+          </div>
+          <div class="sub-head">Hazırlık Durumu</div>
+          <div class="check-grid">
+            <label><input type="checkbox"> Drone Çekildi mi?</label>
+            <label><input type="checkbox"> Video Çekildi mi?</label>
+            <label><input type="checkbox"> Tapu Fotoğrafı Alındı mı?</label>
+            <label><input type="checkbox"> Konum Doğrulandı mı?</label>
+            <label><input type="checkbox"> İlan Yayına Hazır mı?</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="s12">
+        <div class="panel-head"><div class="num">12</div><h3>İlan Yayın Kontrol Listesi</h3></div>
+        <div class="panel-body">
+          <div class="platform-row">
+            <label><input type="checkbox"> Sahibinden</label>
+            <label><input type="checkbox"> Hepsiemlak</label>
+            <label><input type="checkbox"> Emlakjet</label>
+            <label><input type="checkbox"> Facebook</label>
+            <label><input type="checkbox"> Instagram</label>
+            <label><input type="checkbox"> WhatsApp Durumu</label>
+            <label><input type="checkbox"> Parla Web Sitesi</label>
+            <label><input type="checkbox"> Diğer</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="s13">
+        <div class="panel-head"><div class="num">13</div><h3>Danışman Notları</h3></div>
+        <div class="panel-body">
+          <div class="f"><textarea id="danismanNotu" placeholder="Ek notlar, özel durumlar, satıcı beklentileri..."></textarea></div>
+        </div>
+      </div>
+
+      <div class="save-bar">
+        <div class="save-msg" id="saveMsg"></div>
+        <button type="submit" class="btn-save">Portföyü Kaydet</button>
+      </div>
+    </form>
+
+    <div class="saved-list" id="savedListWrap" style="grid-column:2;">
+      <h3>Kayıtlı Portföyler (bu tarayıcıda)</h3>
+      <div id="savedList"><p class="empty-note">Henüz kayıtlı portföy yok.</p></div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  const mahalleMap = {
+    'Edremit': ['Altınkum','Akçay','Sarıkız','Tahtakuşlar','Güre','Zeytinli','Kadıköy','Kızılkeçili','Mehmetalan','Ortaoba','Turhanbey','İkizçay'],
+    'Havran': ['Halılar','Kalabak','Kocadağ','Küçükdere'],
+    'Burhaniye': ['Hacıahmet','Çoruk'],
+    'İvrindi': ['7 Eylül','Korucu'],
+    'Bandırma': ['Yenice']
+  };
+  const ilceSelect = document.getElementById('ilce');
+  const mahalleSelect = document.getElementById('mahalle');
+  ilceSelect.addEventListener('change', () => {
+    const list = mahalleMap[ilceSelect.value] || [];
+    mahalleSelect.innerHTML = list.length
+      ? list.map(m => `<option value="${m}">${m}</option>`).join('')
+      : '<option value="">Önce ilçe seçin</option>';
+  });
+
+  function genId(){ return 'listings:' + Date.now() + '-' + Math.random().toString(36).slice(2,7); }
+
+  document.getElementById('showTemplate').addEventListener('click', () => {
+    const box = document.getElementById('templateBox');
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  });
+
+  document.getElementById('jsonImportBtn').addEventListener('click', async () => {
+    const fileInput = document.getElementById('jsonFile');
+    const msg = document.getElementById('importMsg');
+    msg.className = 'import-msg';
+    if (!fileInput.files.length) { msg.textContent = 'Lütfen bir .json dosyası seçin.'; msg.classList.add('err'); return; }
+
+    try {
+      const text = await fileInput.files[0].text();
+      const data = JSON.parse(text);
+      const items = Array.isArray(data) ? data : [data];
+      if (!items.length) { msg.textContent = 'Dosyada ilan bulunamadı.'; msg.classList.add('err'); return; }
+
+      let ok = 0, fail = 0;
+      for (const item of items) {
+        try {
+          const record = {
+            portfoyNo: item.portfoyNo || item.portfoy_no || '',
+            danisman: item.danisman || '',
+            tasinmazTuru: item.tasinmazTuru || item.tip || item.kategori || '',
+            ilanTuru: item.ilanTuru || item.durum || '',
+            ilce: item.ilce || '',
+            mahalle: item.mahalle || '',
+            istenenFiyat: item.istenenFiyat || item.fiyat || '',
+            m2Net: item.m2Net || item.m2 || '',
+            odaSayisi: item.odaSayisi || item.oda || '',
+            createdAt: new Date().toISOString(),
+            kaynak: 'JSON İçe Aktarım'
+          };
+          const res = await window.storage.set(genId(), JSON.stringify(record), false);
+          if (res) ok++; else fail++;
+        } catch (e) { fail++; }
+      }
+      msg.textContent = `${ok} ilan başarıyla içe aktarıldı${fail ? `, ${fail} kayıt işlenemedi` : ''}.`;
+      msg.classList.add(fail && !ok ? 'err' : 'ok');
+      fileInput.value = '';
+      loadSaved();
+    } catch (e) {
+      msg.textContent = 'Dosya okunamadı — geçerli bir JSON formatında olduğundan emin ol.';
+      msg.classList.add('err');
+    }
+  });
+
+  async function loadSaved() {
+    const wrap = document.getElementById('savedList');
+    try {
+      const res = await window.storage.list('listings:');
+      const keys = (res && res.keys) || [];
+      if (!keys.length) { wrap.innerHTML = '<p class="empty-note">Henüz kayıtlı portföy yok.</p>'; return; }
+      let html = '';
+      for (const key of keys) {
+        try {
+          const item = await window.storage.get(key, false);
+          if (!item) continue;
+          const d = JSON.parse(item.value);
+          html += `<div class="saved-row">
+            <div class="info"><b>${d.portfoyNo || 'Portföy'}</b> — ${d.tasinmazTuru || ''} · ${d.ilce || ''} ${d.mahalle || ''}
+              <div class="meta">${d.ilanTuru || ''} · ${d.istenenFiyat ? Number(d.istenenFiyat).toLocaleString('tr-TR') + ' ₺' : 'Fiyat girilmedi'} · ${d.danisman || 'Danışman belirtilmedi'}</div>
+            </div>
+            <button class="del" data-key="${key}">Sil</button>
+          </div>`;
+        } catch(e) {}
+      }
+      wrap.innerHTML = html || '<p class="empty-note">Henüz kayıtlı portföy yok.</p>';
+      wrap.querySelectorAll('.del').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          await window.storage.delete(btn.dataset.key, false);
+          loadSaved();
+        });
+      });
+    } catch (e) {
+      wrap.innerHTML = '<p class="empty-note">Kayıtlar yüklenemedi.</p>';
+    }
+  }
+  loadSaved();
+
+  document.getElementById('listingForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const record = {
+      portfoyNo: document.getElementById('portfoyNo').value,
+      danisman: document.getElementById('danisman').value,
+      tasinmazTuru: document.getElementById('tasinmazTuru').value,
+      ilanTuru: document.getElementById('ilanTuru').value,
+      ilce: document.getElementById('ilce').value,
+      mahalle: document.getElementById('mahalle').value,
+      istenenFiyat: document.getElementById('istenenFiyat').value,
+      m2Net: document.getElementById('m2Net').value,
+      odaSayisi: document.getElementById('odaSayisi').value,
+      createdAt: new Date().toISOString()
+    };
+    const saveMsg = document.getElementById('saveMsg');
+    try {
+      const result = await window.storage.set(genId(), JSON.stringify(record), false);
+      if (result) {
+        saveMsg.textContent = 'Portföy kaydedildi.';
+        e.target.reset();
+        mahalleSelect.innerHTML = '<option value="">Önce ilçe seçin</option>';
+        loadSaved();
+      } else {
+        saveMsg.textContent = 'Kayıt sırasında bir sorun oluştu, tekrar deneyin.';
+      }
+    } catch (err) {
+      saveMsg.textContent = 'Kayıt sırasında bir sorun oluştu, tekrar deneyin.';
+    }
+  });
+</script>
+
+</body>
+</html>
