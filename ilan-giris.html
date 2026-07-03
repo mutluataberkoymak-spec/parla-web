@@ -239,6 +239,43 @@
   .import-template{ font-size:0.78rem; color:var(--link); cursor:pointer; text-decoration:underline; background:none; border:none; padding:0; font-family:'Inter',sans-serif; }
   #templateBox{ border-radius:var(--radius-sm); }
 
+  /* ---------- PHOTO UPLOAD ---------- */
+  #fotoInput{
+    font-size:0.84rem; max-width:100%; width:100%; color:var(--text-soft);
+    border:1px dashed var(--border); border-radius:var(--radius-sm); padding:9px 12px; background:var(--bg-alt);
+  }
+  #fotoInput::file-selector-button{
+    background:var(--navy); color:#fff; border:none; border-radius:999px; padding:7px 14px;
+    margin-right:10px; font-family:'Inter',sans-serif; font-size:0.8rem; font-weight:600; cursor:pointer;
+  }
+  .photo-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(132px,1fr)); gap:12px; margin-top:16px; }
+  .photo-grid:empty{ margin-top:0; }
+  .photo-thumb{
+    position:relative; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;
+    background:var(--bg-panel); box-shadow:var(--shadow-sm); display:flex; flex-direction:column;
+  }
+  .photo-thumb img{ width:100%; aspect-ratio:4/3; object-fit:cover; display:block; }
+  .photo-thumb.cover{ border-color:var(--yellow-dark); box-shadow:0 0 0 2px var(--yellow), var(--shadow-sm); }
+  .photo-thumb .ph-remove{
+    position:absolute; top:6px; right:6px; width:24px; height:24px; border:none; border-radius:50%;
+    background:rgba(16,22,30,0.62); color:#fff; font-size:0.76rem; cursor:pointer; line-height:1;
+    display:flex; align-items:center; justify-content:center; transition:background .2s; z-index:2;
+  }
+  .photo-thumb .ph-remove:hover{ background:var(--red); }
+  .photo-thumb .ph-cover-badge{
+    position:absolute; top:6px; left:6px; background:var(--yellow); color:var(--navy);
+    font-size:0.6rem; font-weight:800; letter-spacing:0.06em; padding:3px 9px; border-radius:999px;
+    font-family:'Plus Jakarta Sans',sans-serif; box-shadow:0 2px 6px rgba(0,0,0,0.18); z-index:2;
+  }
+  .photo-thumb .ph-set-cover{
+    width:100%; border:none; border-top:1px solid var(--border); background:#fff; color:var(--navy);
+    font-size:0.72rem; font-weight:600; padding:7px 4px; cursor:pointer; font-family:'Inter',sans-serif;
+    transition:background .2s;
+  }
+  .photo-thumb .ph-set-cover:hover{ background:var(--yellow-soft); }
+  .photo-thumb.cover .ph-set-cover{ background:var(--yellow-soft); cursor:default; }
+  .photo-note{ font-size:0.76rem; color:var(--text-soft); margin-top:12px; }
+
   /* ---------- AUTH GATE ---------- */
   body.locked header, body.locked .page-head, body.locked main{ display:none; }
   #authGate{
@@ -305,6 +342,7 @@
       <h4>Bölümler</h4>
       <a href="#import">↑ Toplu İçe Aktar</a>
       <a href="#aciklamaPanel">★ İlan Açıklaması</a>
+      <a href="#fotoPanel">★ Fotoğraflar</a>
       <a href="#s1">1. Portföy Bilgileri</a>
       <a href="#s2">2. Mal Sahibi Bilgileri</a>
       <a href="#s3">3. Taşınmaz Bilgileri</a>
@@ -371,6 +409,18 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
               <textarea id="aciklama" style="min-height:110px;" placeholder="İlan sayfasında ve ilan detayında görünecek açıklama metni (mahalle, konum avantajları, öne çıkan özellikler vb.)"></textarea>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="panel" id="fotoPanel">
+        <div class="panel-head"><div class="num">★</div><h3>Fotoğraflar (Web Sitesinde Yayınlanır)</h3></div>
+        <div class="panel-body">
+          <div class="f">
+            <label>Fotoğraf Seç (birden fazla seçebilirsiniz)</label>
+            <input type="file" id="fotoInput" accept="image/*" multiple>
+          </div>
+          <div class="photo-grid" id="fotoPreview"></div>
+          <p class="photo-note">Fotoğraflar tarayıcı depolamasında (localStorage) saklanır ve kaydetmeden önce otomatik olarak küçültülür; toplam boyutu makul tutmak için az sayıda fotoğraf eklemeniz önerilir. ★ Kapak olarak işaretlediğiniz fotoğraf, web sitesindeki ilan kartında görünür.</p>
         </div>
       </div>
 
@@ -639,6 +689,13 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
             <label><input type="checkbox"> Tren İstasyonu</label>
             <label><input type="checkbox"> Ulaşım Kolaylığı</label>
             <label><input type="checkbox"> Diğer</label>
+          </div>
+          <div class="sub-head">Cephe</div>
+          <div class="check-grid" id="cephe">
+            <label><input type="checkbox"> Kuzey</label>
+            <label><input type="checkbox"> Güney</label>
+            <label><input type="checkbox"> Doğu</label>
+            <label><input type="checkbox"> Batı</label>
           </div>
           <div class="sub-head">Manzara Özellikleri</div>
           <div class="check-grid" id="manzaraOzellikleri">
@@ -930,6 +987,8 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
             muhitOzellikleri: Array.isArray(item.muhitOzellikleri) ? item.muhitOzellikleri : [],
             ulasimOzellikleri: Array.isArray(item.ulasimOzellikleri) ? item.ulasimOzellikleri : [],
             manzaraOzellikleri: Array.isArray(item.manzaraOzellikleri) ? item.manzaraOzellikleri : [],
+            cephe: Array.isArray(item.cephe) ? item.cephe : [],
+            fotograflar: Array.isArray(item.fotograflar) ? item.fotograflar : [],
             createdAt: new Date().toISOString(),
             kaynak: 'JSON İçe Aktarım'
           };
@@ -980,6 +1039,74 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
   }
   loadSaved();
 
+  // ---- Fotoğraf yükleme (istemci tarafı sıkıştırma + kapak seçimi) ----
+  let uploadedPhotos = []; // { dataUrl, isCover }
+
+  function compressImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const MAX_EDGE = 1280;
+          const scale = Math.min(1, MAX_EDGE / Math.max(img.width, img.height));
+          const w = Math.max(1, Math.round(img.width * scale));
+          const h = Math.max(1, Math.round(img.height * scale));
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.72));
+        };
+        img.onerror = () => reject(new Error('Görsel okunamadı'));
+        img.src = reader.result;
+      };
+      reader.onerror = () => reject(new Error('Dosya okunamadı'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderPhotoPreview() {
+    const grid = document.getElementById('fotoPreview');
+    grid.innerHTML = uploadedPhotos.map((p, i) => `
+      <div class="photo-thumb${p.isCover ? ' cover' : ''}" data-idx="${i}">
+        ${p.isCover ? '<span class="ph-cover-badge">KAPAK</span>' : ''}
+        <button type="button" class="ph-remove" title="Fotoğrafı kaldır" aria-label="Fotoğrafı kaldır">✕</button>
+        <img src="${p.dataUrl}" alt="Fotoğraf ${i + 1}">
+        <button type="button" class="ph-set-cover">${p.isCover ? '★ Kapak Fotoğrafı' : '☆ Kapak Yap'}</button>
+      </div>`).join('');
+    grid.querySelectorAll('.ph-remove').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.closest('.photo-thumb').dataset.idx);
+        const wasCover = uploadedPhotos[i] && uploadedPhotos[i].isCover;
+        uploadedPhotos.splice(i, 1);
+        if (wasCover && uploadedPhotos.length) uploadedPhotos[0].isCover = true;
+        renderPhotoPreview();
+      });
+    });
+    grid.querySelectorAll('.ph-set-cover').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.closest('.photo-thumb').dataset.idx);
+        uploadedPhotos.forEach((p, j) => { p.isCover = (j === i); });
+        renderPhotoPreview();
+      });
+    });
+  }
+
+  document.getElementById('fotoInput').addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files || []);
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+      try {
+        const dataUrl = await compressImage(file);
+        uploadedPhotos.push({ dataUrl, isCover: !uploadedPhotos.some((p) => p.isCover) });
+      } catch (err) {
+        console.error('Fotoğraf işlenemedi:', err);
+      }
+    }
+    e.target.value = '';
+    renderPhotoPreview();
+  });
+
   document.getElementById('listingForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const balkonSayisiVal = parseInt(document.getElementById('balkonSayisi').value, 10) || 0;
@@ -1011,22 +1138,39 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
       muhitOzellikleri: collectChecked('muhitOzellikleri'),
       ulasimOzellikleri: collectChecked('ulasimOzellikleri'),
       manzaraOzellikleri: collectChecked('manzaraOzellikleri'),
+      cephe: collectChecked('cephe'),
+      // Kapak fotoğrafı her zaman dizinin başında tutulur — web sitesi
+      // (index.html) kart kapağı ve galeri ilk görseli olarak fotograflar[0]'ı kullanır.
+      fotograflar: (() => {
+        const cover = uploadedPhotos.find((p) => p.isCover);
+        const rest = uploadedPhotos.filter((p) => !p.isCover).map((p) => p.dataUrl);
+        return cover ? [cover.dataUrl].concat(rest) : rest;
+      })(),
       danismanNotu: document.getElementById('danismanNotu').value,
       createdAt: new Date().toISOString()
     };
     const saveMsg = document.getElementById('saveMsg');
+    const hadPhotos = uploadedPhotos.length > 0;
+    const failMsg = hadPhotos
+      ? 'Kayıt başarısız — fotoğraflar tarayıcı depolamasına sığmadı olabilir. Daha az veya daha küçük fotoğraf deneyin.'
+      : 'Kayıt sırasında bir sorun oluştu, tekrar deneyin.';
     try {
       const result = await window.storage.set(genId(), JSON.stringify(record), false);
       if (result) {
+        saveMsg.style.color = 'var(--green)';
         saveMsg.textContent = 'Portföy kaydedildi.';
         e.target.reset();
         mahalleSelect.innerHTML = '<option value="">Önce ilçe seçin</option>';
+        uploadedPhotos = [];
+        renderPhotoPreview();
         loadSaved();
       } else {
-        saveMsg.textContent = 'Kayıt sırasında bir sorun oluştu, tekrar deneyin.';
+        saveMsg.style.color = 'var(--red)';
+        saveMsg.textContent = failMsg;
       }
     } catch (err) {
-      saveMsg.textContent = 'Kayıt sırasında bir sorun oluştu, tekrar deneyin.';
+      saveMsg.style.color = 'var(--red)';
+      saveMsg.textContent = failMsg;
     }
   });
 </script>
