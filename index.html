@@ -310,10 +310,24 @@
   .modal-price-row .amount{ font-family:'Plus Jakarta Sans'; font-weight:800; font-size:1.45rem; color:var(--navy); letter-spacing:-0.02em; }
   .modal-price-row .ref{ font-size:0.76rem; color:var(--text-soft); }
   .modal-desc{ font-size:0.9rem; color:var(--text); margin-bottom:16px; line-height:1.65; white-space:pre-line; }
-  .modal-feat-chips span{
-    display:inline-block; background:var(--yellow-soft); border:1px solid #F0DFA0; color:#6B5A10;
-    padding:5px 13px; font-size:0.76rem; font-weight:500; margin:3px 6px 3px 0; border-radius:999px;
+  .modal-feat-chips .feat-title{
+    font-family:'Plus Jakarta Sans','Inter',sans-serif; font-weight:800; font-size:1rem; color:var(--navy);
+    letter-spacing:-0.01em; padding-top:16px; border-top:1px solid var(--border); margin-bottom:14px;
   }
+  .feat-group{ margin-bottom:14px; }
+  .feat-group:last-child{ margin-bottom:0; }
+  .feat-group-label{
+    font-family:'Plus Jakarta Sans','Inter',sans-serif; font-size:0.7rem; font-weight:700;
+    letter-spacing:0.07em; text-transform:uppercase; color:var(--navy); margin-bottom:7px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .feat-group-label::before{ content:''; width:14px; height:3px; border-radius:2px; background:var(--yellow); flex-shrink:0; }
+  .feat-group-items{ display:flex; flex-wrap:wrap; gap:6px; }
+  .feat-group-items span{
+    display:inline-block; background:var(--bg-alt); border:1px solid var(--border); color:var(--text-soft);
+    padding:5px 12px; font-size:0.76rem; font-weight:500; border-radius:999px;
+  }
+  .feat-group.genel .feat-group-items span{ background:var(--yellow-soft); border-color:#F0DFA0; color:#6B5A10; }
   .modal-cta{ margin-top:22px; display:flex; gap:10px; flex-wrap:wrap; }
   .modal-cta .btn-outline:first-child{ background:var(--yellow); border-color:var(--yellow); color:var(--navy); }
   .modal-cta .btn-outline:first-child:hover{ background:var(--yellow-dark); border-color:var(--yellow-dark); }
@@ -1098,12 +1112,28 @@
       modalDesc.style.display = 'none';
     }
 
-    const chips = [];
-    Object.keys(FEATURE_LABELS).forEach((k) => { if (row.dataset[k] === '1') chips.push(FEATURE_LABELS[k]); });
-    let extra = [];
-    try { extra = JSON.parse(row.dataset.extraFeatures || '[]'); } catch (e) { extra = []; }
-    extra.forEach((f) => { if (!chips.includes(f)) chips.push(f); });
-    modalFeatChips.innerHTML = chips.map((f) => `<span>${esc(f)}</span>`).join('');
+    // Kategorize özellik grupları (sahibinden.com "ÖZELLİKLER" bölümü gibi)
+    const parseList = (v) => {
+      try { const a = JSON.parse(v || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+    };
+    const genel = [];
+    Object.keys(FEATURE_LABELS).forEach((k) => { if (row.dataset[k] === '1') genel.push(FEATURE_LABELS[k]); });
+    const featGroups = [
+      { label: 'Cephe', items: parseList(row.dataset.cephe) },
+      { label: 'Genel', items: genel, cls: 'genel' },
+      { label: 'İç Özellikler', items: parseList(row.dataset.ic) },
+      { label: 'Dış Özellikler', items: parseList(row.dataset.dis) },
+      { label: 'Muhit', items: parseList(row.dataset.muhit) },
+      { label: 'Ulaşım', items: parseList(row.dataset.ulasim) },
+      { label: 'Manzara', items: parseList(row.dataset.manzara) }
+    ].filter((g) => g.items.length);
+    modalFeatChips.innerHTML = featGroups.length
+      ? '<div class="feat-title">Özellikler</div>' + featGroups.map((g) => `
+        <div class="feat-group${g.cls ? ' ' + g.cls : ''}">
+          <div class="feat-group-label">${esc(g.label)}</div>
+          <div class="feat-group-items">${g.items.map((f) => `<span>${esc(f)}</span>`).join('')}</div>
+        </div>`).join('')
+      : '';
 
     listingModal.classList.add('open');
   }
@@ -1242,13 +1272,6 @@
     if (rec.odaSayisi) specsParts.push(`<span><b>${esc(rec.odaSayisi)}</b> Oda</span>`);
     if (rec.m2Net) specsParts.push(`<span><b>${esc(rec.m2Net)} m²</b></span>`);
 
-    const uniqueFeatures = Array.from(new Set([]
-      .concat(rec.icOzellikler || [])
-      .concat(rec.disOzellikler || [])
-      .concat(rec.muhitOzellikleri || [])
-      .concat(rec.ulasimOzellikleri || [])
-      .concat(rec.manzaraOzellikleri || [])));
-
     const row = document.createElement('div');
     row.className = 'listing-row';
     row.dataset.il = rec.il || 'Balıkesir';
@@ -1266,7 +1289,12 @@
     row.dataset.kredi = rec.krediUygun ? '1' : '0';
     row.dataset.balkon = rec.balkon ? '1' : '0';
     row.dataset.aciklama = rec.aciklama || '';
-    row.dataset.extraFeatures = JSON.stringify(uniqueFeatures);
+    row.dataset.cephe = JSON.stringify(Array.isArray(rec.cephe) ? rec.cephe : []);
+    row.dataset.ic = JSON.stringify(Array.isArray(rec.icOzellikler) ? rec.icOzellikler : []);
+    row.dataset.dis = JSON.stringify(Array.isArray(rec.disOzellikler) ? rec.disOzellikler : []);
+    row.dataset.muhit = JSON.stringify(Array.isArray(rec.muhitOzellikleri) ? rec.muhitOzellikleri : []);
+    row.dataset.ulasim = JSON.stringify(Array.isArray(rec.ulasimOzellikleri) ? rec.ulasimOzellikleri : []);
+    row.dataset.manzara = JSON.stringify(Array.isArray(rec.manzaraOzellikleri) ? rec.manzaraOzellikleri : []);
     row.dataset.fotograflar = JSON.stringify(rec.fotograflar || []);
 
     const cover = (rec.fotograflar && rec.fotograflar[0]) || '';
