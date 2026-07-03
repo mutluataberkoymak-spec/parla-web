@@ -1349,6 +1349,9 @@
           const item = await window.storage.get(key);
           if (!item) continue;
           const rec = JSON.parse(item.value);
+          // Pasife alınan ilanlar halka açık sitede gösterilmez (durum alanı
+          // olmayan eski kayıtlar aktif kabul edilir).
+          if (rec && rec.durum === 'pasif') continue;
           table.appendChild(renderListingRow(rec));
         } catch (e) { /* bozuk kayıt atlanır */ }
       }
