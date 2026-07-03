@@ -191,6 +191,30 @@
     .l-fav{ display:none; }
   }
 
+  /* ---------- LISTING DETAIL MODAL ---------- */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(20,26,34,0.6); z-index:300; display:none; align-items:center; justify-content:center; padding:20px; }
+  .modal-overlay.open{ display:flex; }
+  .modal-box{ background:#fff; max-width:640px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,0.3); }
+  .modal-photo{ height:260px; background:var(--bg-panel); position:relative; border-bottom:1px solid var(--border); }
+  .modal-photo .plan{ position:absolute; inset:20px; border:1px solid #C7C7C0; }
+  .modal-photo .plan::before, .modal-photo .plan::after{ content:''; position:absolute; background:#C7C7C0; }
+  .modal-photo .plan::before{ top:0; bottom:0; left:40%; width:1px; }
+  .modal-photo .plan::after{ left:0; right:0; top:55%; height:1px; }
+  .modal-photo img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .modal-photo .l-badge{ position:absolute; top:10px; left:10px; }
+  .modal-close{ position:absolute; top:10px; right:10px; width:32px; height:32px; border:none; background:rgba(0,0,0,0.5); color:#fff; font-size:1.1rem; cursor:pointer; border-radius:50%; }
+  .modal-body{ padding:22px 24px 26px; }
+  .modal-body h3{ font-size:1.2rem; color:var(--navy); margin-bottom:6px; }
+  .modal-body .loc{ font-size:0.86rem; color:var(--text-soft); margin-bottom:10px; }
+  .modal-body .specs{ font-size:0.84rem; color:var(--text-soft); display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px; }
+  .modal-body .specs b{ color:var(--text); font-weight:500; }
+  .modal-price-row{ display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:14px 0; margin-bottom:16px; }
+  .modal-price-row .amount{ font-family:'Roboto Condensed'; font-weight:700; font-size:1.4rem; color:var(--navy); }
+  .modal-price-row .ref{ font-size:0.78rem; color:var(--text-soft); }
+  .modal-desc{ font-size:0.9rem; color:var(--text); margin-bottom:14px; line-height:1.55; }
+  .modal-feat-chips span{ display:inline-block; background:var(--bg-alt); border:1px solid var(--border); padding:5px 12px; font-size:0.78rem; margin:3px 6px 3px 0; }
+  .modal-cta{ margin-top:18px; display:flex; gap:10px; flex-wrap:wrap; }
+
   .view-all{ text-align:center; margin-top:18px; }
   .btn-outline{ display:inline-block; border:1px solid var(--navy); color:var(--navy); padding:11px 26px; font-size:0.86rem; font-weight:600; }
   .btn-outline:hover{ background:var(--navy); color:#fff; }
@@ -753,6 +777,32 @@
   </div>
 </footer>
 
+<div class="modal-overlay" id="listingModal">
+  <div class="modal-box">
+    <div class="modal-photo" id="modalPhoto">
+      <img id="modalImg" style="display:none;" alt="">
+      <div class="plan" id="modalPlan"></div>
+      <div class="l-badge" id="modalBadge"></div>
+      <button class="modal-close" id="modalClose" aria-label="Kapat">✕</button>
+    </div>
+    <div class="modal-body">
+      <h3 id="modalTitle"></h3>
+      <div class="loc" id="modalLoc"></div>
+      <div class="specs" id="modalSpecs"></div>
+      <div class="modal-price-row">
+        <div class="amount" id="modalPrice"></div>
+        <div class="ref" id="modalRef"></div>
+      </div>
+      <p class="modal-desc" id="modalDesc" style="display:none;"></p>
+      <div class="modal-feat-chips" id="modalFeatChips"></div>
+      <div class="modal-cta">
+        <a href="#iletisim" class="btn-outline" id="modalContactBtn">Bu İlan İçin Bilgi Al</a>
+        <a href="tel:05317366400" class="btn-outline">Hemen Ara</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <button id="ai-toggle" aria-label="Parla Asistan">✦</button>
 <div id="ai-panel">
   <div class="ai-head"><span><span class="dot"></span>Parla Asistan</span><button id="ai-close">✕</button></div>
@@ -922,6 +972,83 @@
     });
   });
 
+  // ---- İlan Detay Modalı ----
+  const listingModal = document.getElementById('listingModal');
+  const modalImg = document.getElementById('modalImg');
+  const modalPlan = document.getElementById('modalPlan');
+  const modalBadge = document.getElementById('modalBadge');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalLoc = document.getElementById('modalLoc');
+  const modalSpecs = document.getElementById('modalSpecs');
+  const modalPrice = document.getElementById('modalPrice');
+  const modalRef = document.getElementById('modalRef');
+  const modalDesc = document.getElementById('modalDesc');
+  const modalFeatChips = document.getElementById('modalFeatChips');
+
+  const FEATURE_LABELS = { asansor: 'Asansör', otopark: 'Otopark', esyali: 'Eşyalı', site: 'Site İçinde', kredi: 'Krediye Uygun', balkon: 'Balkon' };
+
+  function openListingModal(row) {
+    const h3 = row.querySelector('h3');
+    const loc = row.querySelector('.loc');
+    const specs = row.querySelector('.specs');
+    const price = row.querySelector('.amount');
+    const ref = row.querySelector('.ref');
+    const badge = row.querySelector('.l-badge');
+
+    modalTitle.textContent = h3 ? h3.textContent : '';
+    modalLoc.textContent = loc ? loc.textContent : '';
+    modalSpecs.innerHTML = specs ? specs.innerHTML : '';
+    modalPrice.textContent = price ? price.textContent : '';
+    modalRef.textContent = ref ? ref.textContent : '';
+    modalBadge.textContent = badge ? badge.textContent : '';
+    modalBadge.className = 'l-badge ' + (badge ? badge.className.replace('l-badge', '').trim() : 'badge-sale');
+
+    let photos = [];
+    try { photos = JSON.parse(row.dataset.fotograflar || '[]'); } catch (e) { photos = []; }
+    if (photos.length) {
+      modalImg.src = photos[0];
+      modalImg.style.display = 'block';
+      modalPlan.style.display = 'none';
+    } else {
+      modalImg.removeAttribute('src');
+      modalImg.style.display = 'none';
+      modalPlan.style.display = 'block';
+    }
+
+    const desc = row.dataset.aciklama || '';
+    if (desc) {
+      modalDesc.textContent = desc;
+      modalDesc.style.display = 'block';
+    } else {
+      modalDesc.style.display = 'none';
+    }
+
+    const chips = [];
+    Object.keys(FEATURE_LABELS).forEach((k) => { if (row.dataset[k] === '1') chips.push(FEATURE_LABELS[k]); });
+    let extra = [];
+    try { extra = JSON.parse(row.dataset.extraFeatures || '[]'); } catch (e) { extra = []; }
+    extra.forEach((f) => { if (!chips.includes(f)) chips.push(f); });
+    modalFeatChips.innerHTML = chips.map((f) => `<span>${esc(f)}</span>`).join('');
+
+    listingModal.classList.add('open');
+  }
+
+  function closeListingModal() {
+    listingModal.classList.remove('open');
+  }
+
+  document.getElementById('modalClose').addEventListener('click', closeListingModal);
+  document.getElementById('modalContactBtn').addEventListener('click', closeListingModal);
+  listingModal.addEventListener('click', (e) => { if (e.target === listingModal) closeListingModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeListingModal(); });
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.l-fav')) return;
+    const row = e.target.closest('.listing-row');
+    if (!row) return;
+    openListingModal(row);
+  });
+
   document.getElementById('leadForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -1025,7 +1152,7 @@
     return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
 
-  function renderListingRow(rec, idx) {
+  function renderListingRow(rec) {
     const emlak = mapEmlak(rec.tasinmazTuru);
     const tip = rec.ilanTuru || 'Satılık';
     const badgeClass = tip === 'Kiralık' ? 'badge-rent' : 'badge-sale';
@@ -1035,22 +1162,12 @@
     if (rec.odaSayisi) specsParts.push(`<span><b>${esc(rec.odaSayisi)}</b> Oda</span>`);
     if (rec.m2Net) specsParts.push(`<span><b>${esc(rec.m2Net)} m²</b></span>`);
 
-    const allFeatures = []
+    const uniqueFeatures = Array.from(new Set([]
       .concat(rec.icOzellikler || [])
       .concat(rec.disOzellikler || [])
       .concat(rec.muhitOzellikleri || [])
       .concat(rec.ulasimOzellikleri || [])
-      .concat(rec.manzaraOzellikleri || []);
-    if (rec.asansor) allFeatures.push('Asansör');
-    if (rec.otopark) allFeatures.push('Otopark');
-    if (rec.esyali) allFeatures.push('Eşyalı');
-    if (rec.siteIcinde) allFeatures.push('Site İçinde');
-    if (rec.krediUygun) allFeatures.push('Krediye Uygun');
-    if (rec.balkon) allFeatures.push('Balkon');
-    const uniqueFeatures = Array.from(new Set(allFeatures));
-
-    const detailId = `panel-detail-${idx}`;
-    const hasDetail = !!(rec.aciklama || uniqueFeatures.length);
+      .concat(rec.manzaraOzellikleri || [])));
 
     const row = document.createElement('div');
     row.className = 'listing-row';
@@ -1068,6 +1185,9 @@
     row.dataset.site = rec.siteIcinde ? '1' : '0';
     row.dataset.kredi = rec.krediUygun ? '1' : '0';
     row.dataset.balkon = rec.balkon ? '1' : '0';
+    row.dataset.aciklama = rec.aciklama || '';
+    row.dataset.extraFeatures = JSON.stringify(uniqueFeatures);
+    row.dataset.fotograflar = JSON.stringify(rec.fotograflar || []);
 
     row.innerHTML = `
       <div class="l-thumb"><div class="plan"></div><div class="l-badge ${badgeClass}">${tip.toUpperCase()}</div></div>
@@ -1075,26 +1195,11 @@
         <h3>${esc(title)}</h3>
         <div class="loc">${esc(rec.il || 'Balıkesir')} / ${esc(rec.ilce || '')} / ${esc(rec.mahalle || '')} Mah.</div>
         <div class="specs">${specsParts.join('')}</div>
-        ${hasDetail ? `<button type="button" class="detay-toggle" data-target="${detailId}" style="margin-top:6px; background:none; border:none; color:var(--link); font-size:0.78rem; cursor:pointer; padding:0; text-decoration:underline;">Detayı Göster ▾</button>` : ''}
       </div>
       <div class="l-price"><div class="amount">${fiyat}</div><div class="ref">İlan No: ${esc(rec.portfoyNo || '—')}</div></div>
       <button class="l-fav">♡</button>`;
 
-    const wrapper = document.createDocumentFragment();
-    wrapper.appendChild(row);
-
-    if (hasDetail) {
-      const detail = document.createElement('div');
-      detail.id = detailId;
-      detail.className = 'panel-detail';
-      detail.style.cssText = 'display:none; background:#FFFBEA; border:1px solid var(--border); border-top:none; padding:14px 18px; font-size:0.84rem; color:var(--text-soft);';
-      const chips = uniqueFeatures.map(f => `<span style="display:inline-block; background:#fff; border:1px solid var(--border); padding:4px 10px; font-size:0.74rem; margin:3px 6px 3px 0; border-radius:2px;">${esc(f)}</span>`).join('');
-      detail.innerHTML = `
-        ${rec.aciklama ? `<p style="margin-bottom:${chips ? '10px' : '0'}; color:var(--text);">${esc(rec.aciklama)}</p>` : ''}
-        ${chips ? `<div>${chips}</div>` : ''}`;
-      wrapper.appendChild(detail);
-    }
-    return wrapper;
+    return row;
   }
 
   async function loadPanelListings() {
@@ -1105,25 +1210,14 @@
       if (!keys.length) return;
       const table = document.querySelector('#portfoy .listing-table');
       if (!table) return;
-      let idx = 0;
       for (const key of keys) {
         try {
           const item = await window.storage.get(key);
           if (!item) continue;
           const rec = JSON.parse(item.value);
-          table.appendChild(renderListingRow(rec, idx++));
+          table.appendChild(renderListingRow(rec));
         } catch (e) { /* bozuk kayıt atlanır */ }
       }
-      // Detay aç/kapa butonlarını bağla
-      table.querySelectorAll('.detay-toggle').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const target = document.getElementById(btn.dataset.target);
-          if (!target) return;
-          const open = target.style.display !== 'none';
-          target.style.display = open ? 'none' : 'block';
-          btn.textContent = open ? 'Detayı Göster ▾' : 'Detayı Gizle ▴';
-        });
-      });
       // Yeni eklenen favori butonlarını da çalışır hale getir
       table.querySelectorAll('.l-fav').forEach(btn => {
         btn.addEventListener('click', () => {
