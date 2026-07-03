@@ -104,9 +104,31 @@
   .import-msg.ok{ color:var(--green); }
   .import-msg.err{ color:var(--red); }
   .import-template{ font-size:0.78rem; color:var(--link); cursor:pointer; text-decoration:underline; background:none; border:none; padding:0; }
+
+  body.locked header, body.locked .page-head, body.locked main{ display:none; }
+  #authGate{ position:fixed; inset:0; background:var(--navy); z-index:500; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .auth-box{ background:#fff; padding:34px 30px; width:100%; max-width:340px; box-shadow:0 20px 60px rgba(0,0,0,0.35); }
+  .auth-box .logo{ font-family:'Roboto Condensed'; font-weight:900; font-size:1.4rem; color:var(--navy); margin-bottom:4px; }
+  .auth-box .logo span{ color:var(--yellow-dark); }
+  .auth-box p{ font-size:0.82rem; color:var(--text-soft); margin-bottom:20px; }
+  .auth-box .f{ margin-bottom:12px; }
+  #authErr{ font-size:0.8rem; color:var(--red); min-height:18px; margin-bottom:6px; }
+  .auth-note{ font-size:0.72rem; color:var(--text-soft); margin-top:14px; line-height:1.4; }
 </style>
 </head>
-<body>
+<body class="locked">
+
+<div id="authGate">
+  <div class="auth-box">
+    <div class="logo">PARLA<span>.</span></div>
+    <p>Danışman panosuna erişmek için giriş yapın.</p>
+    <div class="f"><label>Kullanıcı Adı</label><input id="authUser" autocomplete="username"></div>
+    <div class="f" style="margin-bottom:6px;"><label>Şifre</label><input type="password" id="authPass" autocomplete="current-password"></div>
+    <div id="authErr"></div>
+    <button type="button" id="authBtn" class="btn-save" style="width:100%;">Giriş Yap</button>
+    <div class="auth-note">Bu, statik bir site üzerinde istemci taraflı basit bir erişim kilididir; sayfa kaynağını görebilen biri şifreyi görebilir. Gerçek güvenlik için sunucu taraflı bir giriş sistemi gerekir.</div>
+  </div>
+</div>
 
 <header>
   <div class="wrap head-row">
@@ -128,6 +150,7 @@
     <nav class="toc">
       <h4>Bölümler</h4>
       <a href="#import">↑ Toplu İçe Aktar</a>
+      <a href="#aciklamaPanel">★ İlan Açıklaması</a>
       <a href="#s1">1. Portföy Bilgileri</a>
       <a href="#s2">2. Mal Sahibi Bilgileri</a>
       <a href="#s3">3. Taşınmaz Bilgileri</a>
@@ -141,6 +164,7 @@
       <a href="#s11">11. Ofis Kontrol</a>
       <a href="#s12">12. Yayın Kanalları</a>
       <a href="#s13">13. Danışman Notu</a>
+      <a href="#s14">14. Müşteri Görüşme Takip</a>
     </nav>
 
     <form id="listingForm">
@@ -157,15 +181,43 @@
   {
     "portfoyNo": "P-2026-001",
     "danisman": "Ad Soyad",
+    "baslik": "Özlüce'de Bahçe Katı 3+1 Daire",
+    "aciklama": "Web sitesinde görünecek ilan açıklaması...",
     "tasinmazTuru": "Daire",
     "ilanTuru": "Satılık",
+    "il": "Balıkesir",
     "ilce": "Edremit",
     "mahalle": "Özlüce",
     "istenenFiyat": "4850000",
     "m2Net": "142",
-    "odaSayisi": "3+1"
+    "odaSayisi": "3+1",
+    "asansor": "Var",
+    "otopark": "Kapalı Otopark",
+    "esyali": "Hayır",
+    "krediUygun": "Evet",
+    "siteIcinde": "Evet",
+    "balkonSayisi": "2",
+    "icOzellikler": ["Kombi", "Beyaz Eşya"],
+    "disOzellikler": ["Site İçinde", "24 Saat Güvenlik"],
+    "manzaraOzellikleri": ["Deniz"]
   }
-]</pre>
+]
+Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanları (icOzellikler vb.) opsiyoneldir — girilmezse boş/"yok" kabul edilir.</pre>
+      </div>
+
+      <div class="panel" id="aciklamaPanel">
+        <div class="panel-head"><div class="num">★</div><h3>İlan Açıklaması (Web Sitesinde Yayınlanır)</h3></div>
+        <div class="panel-body">
+          <div class="field-grid">
+            <div class="f" style="grid-column:span 4;"><label>İlan Başlığı</label><input id="baslik" placeholder="Örn. Altınkum'da Deniz Manzaralı Ön Cephe 3+1 Daire"></div>
+          </div>
+          <div class="field-grid" style="margin-top:14px;">
+            <div class="f" style="grid-column:span 4;">
+              <label>Açıklama</label>
+              <textarea id="aciklama" style="min-height:110px;" placeholder="İlan sayfasında ve ilan detayında görünecek açıklama metni (mahalle, konum avantajları, öne çıkan özellikler vb.)"></textarea>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="panel" id="s1">
@@ -266,6 +318,7 @@
           <div class="field-grid">
             <div class="f"><label>m² (Brüt)</label><input type="number" id="m2Brut"></div>
             <div class="f"><label>m² (Net)</label><input type="number" id="m2Net"></div>
+            <div class="f"><label>Açık Alan m²</label><input type="number" id="m2AcikAlan"></div>
             <div class="f"><label>Bina Yaşı</label><input type="number" id="binaYasi"></div>
             <div class="f"><label>Oda Sayısı</label>
               <select id="odaSayisi"><option>1+0</option><option>1+1</option><option>2+1</option><option>3+1</option><option>4+1</option><option>5+2</option><option>Diğer</option></select>
@@ -323,7 +376,7 @@
       <div class="panel" id="s6">
         <div class="panel-head"><div class="num">6</div><h3>İç Özellikler</h3></div>
         <div class="panel-body">
-          <div class="check-grid">
+          <div class="check-grid" id="icOzellikler">
             <label><input type="checkbox"> ADSL / Fiber İnternet</label>
             <label><input type="checkbox"> Akıllı Ev Sistemi</label>
             <label><input type="checkbox"> Alarm (Hırsız)</label>
@@ -341,7 +394,8 @@
             <label><input type="checkbox"> Giyinme Odası</label>
             <label><input type="checkbox"> Gömme Dolap</label>
             <label><input type="checkbox"> Hilton Banyo</label>
-            <label><input type="checkbox"> Intercom / Görüntülü Diyafon</label>
+            <label><input type="checkbox"> İntercom Sistemi</label>
+            <label><input type="checkbox"> Görüntülü Diyafon</label>
             <label><input type="checkbox"> Jakuzi</label>
             <label><input type="checkbox"> Kiler</label>
             <label><input type="checkbox"> Kombi</label>
@@ -356,6 +410,7 @@
             <label><input type="checkbox"> Şömine</label>
             <label><input type="checkbox"> Teras</label>
             <label><input type="checkbox"> Vestiyer</label>
+            <label><input type="checkbox"> Yüz Tanıma &amp; Parmak İzi</label>
           </div>
         </div>
       </div>
@@ -363,9 +418,10 @@
       <div class="panel" id="s7">
         <div class="panel-head"><div class="num">7</div><h3>Dış Özellikler</h3></div>
         <div class="panel-body">
-          <div class="check-grid">
+          <div class="check-grid" id="disOzellikler">
             <label><input type="checkbox"> 24 Saat Güvenlik</label>
-            <label><input type="checkbox"> Açık / Kapalı Otopark</label>
+            <label><input type="checkbox"> Açık Otopark</label>
+            <label><input type="checkbox"> Kapalı Otopark</label>
             <label><input type="checkbox"> Apartman Görevlisi</label>
             <label><input type="checkbox"> Buhar Odası</label>
             <label><input type="checkbox"> Çocuk Oyun Parkı</label>
@@ -377,7 +433,7 @@
             <label><input type="checkbox"> Müstakil Havuzlu</label>
             <label><input type="checkbox"> Sauna</label>
             <label><input type="checkbox"> Ses Yalıtımlı</label>
-            <label><input type="checkbox"> Site İçinde</label>
+            <label><input type="checkbox" id="dsSiteIcinde"> Site İçinde</label>
             <label><input type="checkbox"> Spor Alanı</label>
             <label><input type="checkbox"> Su Deposu</label>
             <label><input type="checkbox"> Tenis Kortu</label>
@@ -385,30 +441,59 @@
             <label><input type="checkbox"> Yangın Merdiveni</label>
             <label><input type="checkbox"> Yüzme Havuzu (Açık)</label>
             <label><input type="checkbox"> Yüzme Havuzu (Kapalı)</label>
+            <label><input type="checkbox"> Diğer</label>
           </div>
           <div class="sub-head">Muhit Özellikleri</div>
-          <div class="check-grid">
+          <div class="check-grid" id="muhitOzellikleri">
             <label><input type="checkbox"> Alışveriş Merkezi</label>
             <label><input type="checkbox"> Belediye</label>
             <label><input type="checkbox"> Cami</label>
+            <label><input type="checkbox"> Cemevi</label>
             <label><input type="checkbox"> Denize Sıfır</label>
             <label><input type="checkbox"> Eczane</label>
+            <label><input type="checkbox"> Eğlence Merkezi</label>
+            <label><input type="checkbox"> Fuar</label>
+            <label><input type="checkbox"> Göl</label>
+            <label><input type="checkbox"> Havra</label>
             <label><input type="checkbox"> Hastane</label>
             <label><input type="checkbox"> İlkokul / Ortaokul</label>
-            <label><input type="checkbox"> Lise / Üniversite</label>
+            <label><input type="checkbox"> İtfaiye</label>
+            <label><input type="checkbox"> Lise</label>
             <label><input type="checkbox"> Market</label>
             <label><input type="checkbox"> Park</label>
             <label><input type="checkbox"> Polis Merkezi</label>
             <label><input type="checkbox"> Sağlık Ocağı</label>
+            <label><input type="checkbox"> Semt Pazarı</label>
+            <label><input type="checkbox"> Spor Salonu</label>
+            <label><input type="checkbox"> Üniversite</label>
+            <label><input type="checkbox"> Diğer</label>
           </div>
           <div class="sub-head">Ulaşım Özellikleri</div>
-          <div class="check-grid">
+          <div class="check-grid" id="ulasimOzellikleri">
             <label><input type="checkbox"> Anayol</label>
+            <label><input type="checkbox"> Avrasya Tüneli</label>
+            <label><input type="checkbox"> Boğaz Köprüleri</label>
             <label><input type="checkbox"> Cadde</label>
+            <label><input type="checkbox"> Deniz Otobüsü</label>
+            <label><input type="checkbox"> Dolmuş</label>
             <label><input type="checkbox"> Metro</label>
             <label><input type="checkbox"> Metrobüs</label>
+            <label><input type="checkbox"> Minibüs</label>
             <label><input type="checkbox"> Otobüs Durağı</label>
+            <label><input type="checkbox"> Sahil</label>
             <label><input type="checkbox"> Tramvay</label>
+            <label><input type="checkbox"> Tren İstasyonu</label>
+            <label><input type="checkbox"> Ulaşım Kolaylığı</label>
+            <label><input type="checkbox"> Diğer</label>
+          </div>
+          <div class="sub-head">Manzara Özellikleri</div>
+          <div class="check-grid" id="manzaraOzellikleri">
+            <label><input type="checkbox"> Boğaz</label>
+            <label><input type="checkbox"> Deniz</label>
+            <label><input type="checkbox"> Doğa</label>
+            <label><input type="checkbox"> Park &amp; Yeşil</label>
+            <label><input type="checkbox"> Şehir</label>
+            <label><input type="checkbox"> Diğer</label>
           </div>
         </div>
       </div>
@@ -419,6 +504,7 @@
           <div class="check-grid">
             <label><input type="radio" name="konutTipi"> Daire</label>
             <label><input type="radio" name="konutTipi"> Rezidans</label>
+            <label><input type="radio" name="konutTipi"> Residence</label>
             <label><input type="radio" name="konutTipi"> Müstakil Ev / Villa</label>
             <label><input type="radio" name="konutTipi"> Yazlık</label>
             <label><input type="radio" name="konutTipi"> Diğer</label>
@@ -448,6 +534,7 @@
             <label><input type="checkbox"> Mimari Proje</label>
             <label><input type="checkbox"> Vergi Borcu Yok Yazısı</label>
             <label><input type="checkbox"> Yapı Kullanma İzin Belgesi</label>
+            <label><input type="checkbox"> Diğer</label>
           </div>
         </div>
       </div>
@@ -497,6 +584,52 @@
         </div>
       </div>
 
+      <div class="panel" id="s14">
+        <div class="panel-head"><div class="num">14</div><h3>Müşteri Görüşme Takip</h3></div>
+        <div class="panel-body">
+          <table style="width:100%; border-collapse:collapse; font-size:0.84rem;" id="gorusmeTablo">
+            <thead>
+              <tr style="text-align:left; border-bottom:1px solid var(--border);">
+                <th style="padding:6px 8px; font-size:0.72rem; text-transform:uppercase; color:var(--text-soft);">Tarih</th>
+                <th style="padding:6px 8px; font-size:0.72rem; text-transform:uppercase; color:var(--text-soft);">Müşteri Adı</th>
+                <th style="padding:6px 8px; font-size:0.72rem; text-transform:uppercase; color:var(--text-soft);">Telefon</th>
+                <th style="padding:6px 8px; font-size:0.72rem; text-transform:uppercase; color:var(--text-soft);">Görüşme Konusu</th>
+                <th style="padding:6px 8px; font-size:0.72rem; text-transform:uppercase; color:var(--text-soft);">Sonuç</th>
+                <th style="padding:6px 8px; font-size:0.72rem; text-transform:uppercase; color:var(--text-soft);">Tekrar Ara</th>
+              </tr>
+            </thead>
+            <tbody id="gorusmeTabloBody">
+              <tr>
+                <td style="padding:4px;"><input type="date" style="width:100%;"></td>
+                <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+                <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+                <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+                <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+                <td style="padding:4px; text-align:center;"><input type="checkbox"></td>
+              </tr>
+              <tr>
+                <td style="padding:4px;"><input type="date" style="width:100%;"></td>
+                <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+                <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+                <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+                <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+                <td style="padding:4px; text-align:center;"><input type="checkbox"></td>
+              </tr>
+              <tr>
+                <td style="padding:4px;"><input type="date" style="width:100%;"></td>
+                <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+                <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+                <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+                <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+                <td style="padding:4px; text-align:center;"><input type="checkbox"></td>
+              </tr>
+            </tbody>
+          </table>
+          <button type="button" class="import-template" id="addGorusmeRow" style="margin-top:10px;">+ Satır Ekle</button>
+          <p style="font-size:0.76rem; color:var(--text-soft); margin-top:8px;">Bu tablo yalnızca ofis/danışman takibi içindir; web sitesindeki ilan listesinde gösterilmez.</p>
+        </div>
+      </div>
+
       <div class="save-bar">
         <div class="save-msg" id="saveMsg"></div>
         <button type="submit" class="btn-save">Portföyü Kaydet</button>
@@ -511,7 +644,69 @@
   </div>
 </main>
 
+<script src="storage.js"></script>
 <script>
+  // ---- Basit admin girişi (client-side kilit) ----
+  (function () {
+    const ADMIN_USER = 'admin';
+    const ADMIN_PASS = '123';
+    const gate = document.getElementById('authGate');
+
+    function unlock() {
+      document.body.classList.remove('locked');
+      gate.style.display = 'none';
+    }
+
+    if (sessionStorage.getItem('parla_admin_auth') === '1') {
+      unlock();
+    }
+
+    function tryLogin() {
+      const u = document.getElementById('authUser').value.trim();
+      const p = document.getElementById('authPass').value;
+      const err = document.getElementById('authErr');
+      if (u === ADMIN_USER && p === ADMIN_PASS) {
+        sessionStorage.setItem('parla_admin_auth', '1');
+        err.textContent = '';
+        unlock();
+      } else {
+        err.textContent = 'Kullanıcı adı veya şifre hatalı.';
+      }
+    }
+
+    document.getElementById('authBtn').addEventListener('click', tryLogin);
+    document.getElementById('authPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') tryLogin(); });
+    document.getElementById('authUser').addEventListener('keydown', (e) => { if (e.key === 'Enter') tryLogin(); });
+  })();
+
+  // Belirtilen check-grid/checkbox konteynerindeki işaretli kutuların
+  // görünen metnini (label yazısını) diziye çevirir.
+  function collectChecked(containerId) {
+    const el = document.getElementById(containerId);
+    if (!el) return [];
+    return Array.from(el.querySelectorAll('input[type="checkbox"]:checked'))
+      .map((cb) => cb.closest('label').textContent.trim())
+      .filter(Boolean);
+  }
+
+  function radioValue(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : '';
+  }
+
+  document.getElementById('addGorusmeRow').addEventListener('click', () => {
+    const body = document.getElementById('gorusmeTabloBody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="padding:4px;"><input type="date" style="width:100%;"></td>
+      <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+      <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+      <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+      <td style="padding:4px;"><input type="text" style="width:100%;"></td>
+      <td style="padding:4px; text-align:center;"><input type="checkbox"></td>`;
+    body.appendChild(tr);
+  });
+
   const mahalleMap = {
     'Edremit': ['Altınkum','Akçay','Sarıkız','Tahtakuşlar','Güre','Zeytinli','Kadıköy','Kızılkeçili','Mehmetalan','Ortaoba','Turhanbey','İkizçay'],
     'Havran': ['Halılar','Kalabak','Kocadağ','Küçükdere'],
@@ -547,19 +742,40 @@
       const items = Array.isArray(data) ? data : [data];
       if (!items.length) { msg.textContent = 'Dosyada ilan bulunamadı.'; msg.classList.add('err'); return; }
 
+      function truthy(v) {
+        if (v === true || v === 1) return true;
+        if (typeof v !== 'string') return false;
+        const s = v.trim().toLowerCase();
+        return s === 'var' || s === 'evet' || s === 'yes' || s === 'true' || s === '1';
+      }
+
       let ok = 0, fail = 0;
       for (const item of items) {
         try {
           const record = {
             portfoyNo: item.portfoyNo || item.portfoy_no || '',
             danisman: item.danisman || '',
+            baslik: item.baslik || item.title || '',
+            aciklama: item.aciklama || item.description || item.aciklamaMetni || '',
             tasinmazTuru: item.tasinmazTuru || item.tip || item.kategori || '',
             ilanTuru: item.ilanTuru || item.durum || '',
+            il: item.il || 'Balıkesir',
             ilce: item.ilce || '',
             mahalle: item.mahalle || '',
             istenenFiyat: item.istenenFiyat || item.fiyat || '',
             m2Net: item.m2Net || item.m2 || '',
             odaSayisi: item.odaSayisi || item.oda || '',
+            asansor: truthy(item.asansor ?? item['asansör']),
+            otopark: Boolean(truthy(item.otopark) || (item.otopark && item.otopark !== 'Yok')),
+            esyali: truthy(item.esyali ?? item['eşyalı']),
+            krediUygun: truthy(item.krediUygun ?? item.krediye_uygun),
+            siteIcinde: truthy(item.siteIcinde ?? item.site_icinde),
+            balkon: truthy(item.balkon) || (Number(item.balkonSayisi || item.balkon_sayisi || 0) > 0),
+            icOzellikler: Array.isArray(item.icOzellikler) ? item.icOzellikler : [],
+            disOzellikler: Array.isArray(item.disOzellikler) ? item.disOzellikler : [],
+            muhitOzellikleri: Array.isArray(item.muhitOzellikleri) ? item.muhitOzellikleri : [],
+            ulasimOzellikleri: Array.isArray(item.ulasimOzellikleri) ? item.ulasimOzellikleri : [],
+            manzaraOzellikleri: Array.isArray(item.manzaraOzellikleri) ? item.manzaraOzellikleri : [],
             createdAt: new Date().toISOString(),
             kaynak: 'JSON İçe Aktarım'
           };
@@ -590,7 +806,7 @@
           if (!item) continue;
           const d = JSON.parse(item.value);
           html += `<div class="saved-row">
-            <div class="info"><b>${d.portfoyNo || 'Portföy'}</b> — ${d.tasinmazTuru || ''} · ${d.ilce || ''} ${d.mahalle || ''}
+            <div class="info"><b>${d.baslik || d.portfoyNo || 'Portföy'}</b> — ${d.tasinmazTuru || ''} · ${d.ilce || ''} ${d.mahalle || ''}
               <div class="meta">${d.ilanTuru || ''} · ${d.istenenFiyat ? Number(d.istenenFiyat).toLocaleString('tr-TR') + ' ₺' : 'Fiyat girilmedi'} · ${d.danisman || 'Danışman belirtilmedi'}</div>
             </div>
             <button class="del" data-key="${key}">Sil</button>
@@ -612,16 +828,36 @@
 
   document.getElementById('listingForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const balkonSayisiVal = parseInt(document.getElementById('balkonSayisi').value, 10) || 0;
     const record = {
       portfoyNo: document.getElementById('portfoyNo').value,
       danisman: document.getElementById('danisman').value,
+      baslik: document.getElementById('baslik').value,
+      aciklama: document.getElementById('aciklama').value,
       tasinmazTuru: document.getElementById('tasinmazTuru').value,
       ilanTuru: document.getElementById('ilanTuru').value,
+      il: document.getElementById('il').value || 'Balıkesir',
       ilce: document.getElementById('ilce').value,
       mahalle: document.getElementById('mahalle').value,
       istenenFiyat: document.getElementById('istenenFiyat').value,
       m2Net: document.getElementById('m2Net').value,
+      m2AcikAlan: document.getElementById('m2AcikAlan').value,
       odaSayisi: document.getElementById('odaSayisi').value,
+      konutTipi: radioValue('konutTipi'),
+      asansor: radioValue('asansor') === 'Var',
+      otopark: document.getElementById('otopark').value !== 'Yok',
+      otoparkTuru: document.getElementById('otopark').value,
+      esyali: radioValue('esyali') === 'Evet',
+      krediUygun: radioValue('krediUygun') === 'Evet',
+      siteIcinde: document.getElementById('dsSiteIcinde').checked,
+      balkonSayisi: balkonSayisiVal,
+      balkon: balkonSayisiVal > 0,
+      icOzellikler: collectChecked('icOzellikler'),
+      disOzellikler: collectChecked('disOzellikler'),
+      muhitOzellikleri: collectChecked('muhitOzellikleri'),
+      ulasimOzellikleri: collectChecked('ulasimOzellikleri'),
+      manzaraOzellikleri: collectChecked('manzaraOzellikleri'),
+      danismanNotu: document.getElementById('danismanNotu').value,
       createdAt: new Date().toISOString()
     };
     const saveMsg = document.getElementById('saveMsg');
