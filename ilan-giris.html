@@ -92,10 +92,34 @@
     padding:7px 10px; border-radius:999px; transition:background .2s, color .2s;
   }
   .toc a:hover{ background:var(--yellow-soft); color:var(--navy); }
+  .toc-toggle{ display:none; }
   @media (max-width:900px){
-    .toc{ position:static; max-height:none; display:flex; flex-wrap:wrap; gap:6px; padding:14px; }
-    .toc h4{ width:100%; padding:0; }
-    .toc a{ border:1px solid var(--border); padding:7px 13px; }
+    /* Tek kolona indir ve savedListWrap'in inline grid-column:2'sini etkisizleştir */
+    .layout{ display:block; }
+    #savedListWrap{ margin-top:28px; }
+    /* TOC: mobilde üstte yatay AÇILIR menü */
+    .toc{
+      position:sticky; top:8px; z-index:30;
+      padding:0; background:transparent; border:none; box-shadow:none;
+      max-height:none; overflow:visible; margin-bottom:22px;
+    }
+    .toc-toggle{
+      display:flex; align-items:center; justify-content:space-between; width:100%;
+      background:var(--navy); color:#fff; border:none; cursor:pointer;
+      font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.9rem;
+      padding:13px 18px; border-radius:var(--radius); box-shadow:var(--shadow-md);
+    }
+    .toc-chev{ transition:transform .2s; font-size:1rem; }
+    .toc.open .toc-chev{ transform:rotate(180deg); }
+    .toc-body{
+      display:none; flex-wrap:wrap; gap:6px;
+      margin-top:8px; padding:14px; background:#fff;
+      border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow-lg);
+      max-height:52vh; overflow-y:auto;
+    }
+    .toc.open .toc-body{ display:flex; }
+    .toc-body h4{ display:none; }
+    .toc a{ border:1px solid var(--border); padding:8px 13px; }
     .toc a:hover{ border-color:var(--yellow-dark); }
   }
 
@@ -364,7 +388,11 @@
 <main>
   <div class="wrap layout">
 
-    <nav class="toc">
+    <nav class="toc" id="toc">
+      <button class="toc-toggle" type="button" id="tocToggle" aria-expanded="false" aria-controls="tocBody">
+        <span>☰ Bölümler</span><span class="toc-chev">▾</span>
+      </button>
+      <div class="toc-body" id="tocBody">
       <h4>Bölümler</h4>
       <a href="#import">↑ Toplu İçe Aktar</a>
       <a href="#aciklamaPanel">★ İlan Açıklaması</a>
@@ -383,6 +411,7 @@
       <a href="#s12">12. Yayın Kanalları</a>
       <a href="#s13">13. Danışman Notu</a>
       <a href="#s14">14. Müşteri Görüşme Takip</a>
+      </div>
     </nav>
 
     <form id="listingForm">
@@ -1226,6 +1255,23 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
     }
   }
   loadSaved();
+
+  // ---- Mobil "Bölümler" açılır menüsü ----
+  (function () {
+    const toc = document.getElementById('toc');
+    const toggle = document.getElementById('tocToggle');
+    if (!toc || !toggle) return;
+    toggle.addEventListener('click', () => {
+      const open = toc.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.getElementById('tocBody').addEventListener('click', (e) => {
+      if (e.target.closest('a')) {
+        toc.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
 
   // ---- Fotoğraf yükleme (istemci tarafı sıkıştırma + kapak seçimi) ----
   let uploadedPhotos = []; // { dataUrl, isCover }
