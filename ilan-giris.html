@@ -190,20 +190,46 @@
   .saved-list h3{ font-size:1.1rem; color:var(--navy); margin-bottom:14px; }
   .saved-list h3::after{ content:''; display:block; width:38px; height:4px; border-radius:2px; background:var(--yellow); margin-top:8px; }
   .saved-row{
-    display:flex; justify-content:space-between; align-items:center; gap:14px; background:#fff;
+    display:flex; flex-direction:column; align-items:stretch; gap:10px; background:#fff;
     border:1px solid var(--border); border-radius:var(--radius-sm); box-shadow:var(--shadow-sm);
-    padding:14px 18px; margin-bottom:10px; flex-wrap:wrap; transition:box-shadow .2s;
+    padding:15px 18px; margin-bottom:10px; transition:box-shadow .2s, opacity .2s;
   }
   .saved-row:hover{ box-shadow:var(--shadow-md); }
-  .saved-row .info{ font-size:0.86rem; }
+  .saved-row.pasif{ opacity:0.6; background:var(--bg-alt); }
+  .saved-row .row-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+  .saved-row .info{ font-size:0.86rem; min-width:0; }
   .saved-row .info b{ color:var(--navy); }
   .saved-row .meta{ font-size:0.76rem; color:var(--text-soft); margin-top:2px; }
+  .status-badge{
+    flex-shrink:0; font-size:0.62rem; font-weight:800; letter-spacing:0.07em; padding:4px 11px;
+    border-radius:999px; font-family:'Plus Jakarta Sans',sans-serif; white-space:nowrap;
+  }
+  .status-badge.aktif{ background:rgba(30,142,62,0.1); color:var(--green); border:1px solid rgba(30,142,62,0.32); }
+  .status-badge.pasif{ background:rgba(104,112,123,0.1); color:var(--text-soft); border:1px solid var(--border); }
+  .saved-note{
+    background:var(--yellow-soft); border:1px solid rgba(232,182,0,0.4); border-radius:var(--radius-sm);
+    padding:9px 12px; font-size:0.8rem; color:var(--text); line-height:1.5; overflow-wrap:anywhere;
+  }
+  .saved-note b{ color:var(--navy); font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-right:4px; }
+  .saved-actions{ display:flex; gap:8px; flex-wrap:wrap; padding-top:10px; border-top:1px dashed var(--border); }
+  .saved-row .row-btn{
+    background:#fff; border:1px solid var(--border); color:var(--navy); padding:8px 16px;
+    cursor:pointer; font-size:0.78rem; font-weight:600; border-radius:999px; font-family:'Inter',sans-serif;
+    transition:background .2s, color .2s, border-color .2s;
+  }
+  .saved-row .row-btn:hover{ border-color:var(--yellow-dark); background:var(--yellow-soft); }
   .saved-row .del{
     background:none; border:1px solid var(--border); color:var(--red); padding:8px 16px;
-    cursor:pointer; font-size:0.78rem; font-weight:600; border-radius:999px;
+    cursor:pointer; font-size:0.78rem; font-weight:600; border-radius:999px; font-family:'Inter',sans-serif;
     transition:background .2s, color .2s, border-color .2s;
   }
   .saved-row .del:hover{ background:var(--red); color:#fff; border-color:var(--red); }
+  .btn-cancel{
+    background:#fff; border:1px solid var(--border); color:var(--navy); font-weight:600; padding:12px 24px;
+    cursor:pointer; font-size:0.86rem; border-radius:999px; font-family:'Inter',sans-serif;
+    transition:border-color .2s, background .2s;
+  }
+  .btn-cancel:hover{ border-color:var(--yellow-dark); background:var(--yellow-soft); }
   .empty-note{ font-size:0.86rem; color:var(--text-soft); font-style:italic; }
 
   /* ---------- IMPORT PANEL ---------- */
@@ -843,7 +869,10 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
 
       <div class="save-bar">
         <div class="save-msg" id="saveMsg"></div>
-        <button type="submit" class="btn-save">Portföyü Kaydet</button>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" class="btn-cancel" id="cancelEditBtn" style="display:none;">Vazgeç</button>
+          <button type="submit" class="btn-save" id="saveBtn">Portföyü Kaydet</button>
+        </div>
       </div>
     </form>
 
@@ -903,6 +932,40 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
   function radioValue(name) {
     const el = document.querySelector(`input[name="${name}"]:checked`);
     return el ? el.value : '';
+  }
+
+  // Seçili radio'nun görünen (label) metnini döndürür — value attr'ı olmayan
+  // radio grupları (örn. konutTipi) için anlamlı bir değer üretir.
+  function radioLabel(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    if (!el) return '';
+    const lab = el.closest('label');
+    return lab ? lab.textContent.trim() : el.value;
+  }
+
+  function escHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  // Bir radio grubunu, value attr'ı VEYA label metni eşleşmesine göre işaretler.
+  function setRadio(name, value) {
+    document.querySelectorAll(`input[name="${name}"]`).forEach((r) => {
+      const lab = r.closest('label');
+      const labText = lab ? lab.textContent.trim() : '';
+      r.checked = !!value && ((r.value !== 'on' && r.value === value) || labText === value);
+    });
+  }
+
+  // Bir check-grid konteynerindeki kutuları, kayıtlı dizi değerleriyle
+  // (label metni eşleşmesi) senkronlar.
+  function setCheckedByLabels(containerId, values) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    const set = new Set((values || []).map((v) => String(v).trim()));
+    el.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+      const lab = cb.closest('label');
+      cb.checked = !!lab && set.has(lab.textContent.trim());
+    });
   }
 
   document.getElementById('addGorusmeRow').addEventListener('click', () => {
@@ -989,6 +1052,7 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
             manzaraOzellikleri: Array.isArray(item.manzaraOzellikleri) ? item.manzaraOzellikleri : [],
             cephe: Array.isArray(item.cephe) ? item.cephe : [],
             fotograflar: Array.isArray(item.fotograflar) ? item.fotograflar : [],
+            durum: 'aktif',
             createdAt: new Date().toISOString(),
             kaynak: 'JSON İçe Aktarım'
           };
@@ -1006,6 +1070,102 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
     }
   });
 
+  // ---- Düzenleme modu durumu ----
+  let editingKey = null;       // Düzenlenen kaydın storage anahtarı (null = yeni kayıt modu)
+  let editingOriginal = null;  // Düzenlenen kaydın orijinal hali (createdAt, durum vb. korumak için)
+
+  function exitEditMode(resetForm) {
+    editingKey = null;
+    editingOriginal = null;
+    document.getElementById('saveBtn').textContent = 'Portföyü Kaydet';
+    document.getElementById('cancelEditBtn').style.display = 'none';
+    if (resetForm) {
+      document.getElementById('listingForm').reset();
+      mahalleSelect.innerHTML = '<option value="">Önce ilçe seçin</option>';
+      uploadedPhotos = [];
+      renderPhotoPreview();
+      const saveMsg = document.getElementById('saveMsg');
+      saveMsg.style.color = 'var(--green)';
+      saveMsg.textContent = '';
+    }
+  }
+
+  function ensureOption(selectEl, value) {
+    if (!value) return;
+    if (!Array.from(selectEl.options).some((o) => o.value === value)) {
+      const o = document.createElement('option');
+      o.value = value; o.textContent = value;
+      selectEl.appendChild(o);
+    }
+  }
+
+  async function startEdit(key) {
+    try {
+      const item = await window.storage.get(key, false);
+      if (!item) return;
+      const d = JSON.parse(item.value);
+
+      // Formu temiz bir tabandan doldur (bağımlı alanlar için sıralama önemli).
+      document.getElementById('listingForm').reset();
+
+      const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v == null ? '' : v; };
+      setVal('portfoyNo', d.portfoyNo);
+      setVal('danisman', d.danisman);
+      setVal('baslik', d.baslik);
+      setVal('aciklama', d.aciklama);
+      setVal('tasinmazTuru', d.tasinmazTuru || 'Daire');
+      setVal('ilanTuru', d.ilanTuru || 'Satılık');
+      setVal('il', d.il || 'Balıkesir');
+
+      // Önce ilçe: change handler'ı mahalle listesini kursun, SONRA mahalle seçilsin.
+      ensureOption(ilceSelect, d.ilce);
+      ilceSelect.value = d.ilce || '';
+      ilceSelect.dispatchEvent(new Event('change'));
+      ensureOption(mahalleSelect, d.mahalle);
+      if (d.mahalle) mahalleSelect.value = d.mahalle;
+
+      setVal('istenenFiyat', d.istenenFiyat);
+      setVal('m2Net', d.m2Net);
+      setVal('m2AcikAlan', d.m2AcikAlan);
+      setVal('odaSayisi', d.odaSayisi || '1+0');
+      setVal('balkonSayisi', d.balkonSayisi != null && d.balkonSayisi !== '' ? d.balkonSayisi : (d.balkon ? 1 : ''));
+      setVal('otopark', d.otoparkTuru || (d.otopark ? 'Açık Otopark' : 'Yok'));
+      setVal('danismanNotu', d.danismanNotu);
+
+      setRadio('konutTipi', d.konutTipi);
+      setRadio('asansor', d.asansor ? 'Var' : 'Yok');
+      setRadio('esyali', d.esyali ? 'Evet' : 'Hayır');
+      setRadio('krediUygun', d.krediUygun ? 'Evet' : 'Hayır');
+      document.getElementById('dsSiteIcinde').checked = !!d.siteIcinde;
+
+      setCheckedByLabels('icOzellikler', d.icOzellikler);
+      setCheckedByLabels('disOzellikler', d.disOzellikler);
+      setCheckedByLabels('muhitOzellikleri', d.muhitOzellikleri);
+      setCheckedByLabels('ulasimOzellikleri', d.ulasimOzellikleri);
+      setCheckedByLabels('manzaraOzellikleri', d.manzaraOzellikleri);
+      setCheckedByLabels('cephe', d.cephe);
+      // "Site İçinde" hem disOzellikler dizisinde hem tekil alanda tutulur; tekil alan kazansın.
+      if (d.siteIcinde) document.getElementById('dsSiteIcinde').checked = true;
+
+      // Fotoğrafları geri yükle — dizinin ilk elemanı kapaktır.
+      uploadedPhotos = (Array.isArray(d.fotograflar) ? d.fotograflar : []).map((u, i) => ({ dataUrl: u, isCover: i === 0 }));
+      renderPhotoPreview();
+
+      editingKey = key;
+      editingOriginal = d;
+      document.getElementById('saveBtn').textContent = 'Değişiklikleri Kaydet';
+      document.getElementById('cancelEditBtn').style.display = '';
+      const saveMsg = document.getElementById('saveMsg');
+      saveMsg.style.color = 'var(--navy)';
+      saveMsg.textContent = `Düzenleme modu: "${d.baslik || d.portfoyNo || 'Portföy'}"`;
+      document.getElementById('listingForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) {
+      console.error('Kayıt düzenleme için yüklenemedi:', e);
+    }
+  }
+
+  document.getElementById('cancelEditBtn').addEventListener('click', () => exitEditMode(true));
+
   async function loadSaved() {
     const wrap = document.getElementById('savedList');
     try {
@@ -1018,19 +1178,47 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
           const item = await window.storage.get(key, false);
           if (!item) continue;
           const d = JSON.parse(item.value);
-          html += `<div class="saved-row">
-            <div class="info"><b>${d.baslik || d.portfoyNo || 'Portföy'}</b> — ${d.tasinmazTuru || ''} · ${d.ilce || ''} ${d.mahalle || ''}
-              <div class="meta">${d.ilanTuru || ''} · ${d.istenenFiyat ? Number(d.istenenFiyat).toLocaleString('tr-TR') + ' ₺' : 'Fiyat girilmedi'} · ${d.danisman || 'Danışman belirtilmedi'}</div>
+          const durum = d.durum === 'pasif' ? 'pasif' : 'aktif'; // durum yoksa aktif kabul edilir
+          const not = (d.danismanNotu || '').trim();
+          html += `<div class="saved-row${durum === 'pasif' ? ' pasif' : ''}">
+            <div class="row-top">
+              <div class="info"><b>${escHtml(d.baslik || d.portfoyNo || 'Portföy')}</b> — ${escHtml(d.tasinmazTuru || '')} · ${escHtml(d.ilce || '')} ${escHtml(d.mahalle || '')}
+                <div class="meta">${escHtml(d.ilanTuru || '')} · ${d.istenenFiyat ? Number(d.istenenFiyat).toLocaleString('tr-TR') + ' ₺' : 'Fiyat girilmedi'} · ${escHtml(d.danisman || 'Danışman belirtilmedi')}</div>
+              </div>
+              <span class="status-badge ${durum}">${durum === 'pasif' ? 'PASİF' : 'AKTİF'}</span>
             </div>
-            <button class="del" data-key="${key}">Sil</button>
+            ${not ? `<div class="saved-note">🔒 <b>Özel Not:</b>${escHtml(not)}</div>` : ''}
+            <div class="saved-actions">
+              <button type="button" class="row-btn edit-btn" data-key="${escHtml(key)}">Düzenle</button>
+              <button type="button" class="row-btn toggle-btn" data-key="${escHtml(key)}">${durum === 'pasif' ? 'Aktife Al' : 'Pasife Al'}</button>
+              <button type="button" class="del" data-key="${escHtml(key)}">Sil</button>
+            </div>
           </div>`;
         } catch(e) {}
       }
       wrap.innerHTML = html || '<p class="empty-note">Henüz kayıtlı portföy yok.</p>';
       wrap.querySelectorAll('.del').forEach(btn => {
         btn.addEventListener('click', async () => {
+          if (!confirm('Bu ilanı silmek istediğinize emin misiniz?')) return;
           await window.storage.delete(btn.dataset.key, false);
+          if (editingKey === btn.dataset.key) exitEditMode(true);
           loadSaved();
+        });
+      });
+      wrap.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => startEdit(btn.dataset.key));
+      });
+      wrap.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          try {
+            const item = await window.storage.get(btn.dataset.key, false);
+            if (!item) return;
+            const d = JSON.parse(item.value);
+            d.durum = (d.durum === 'pasif') ? 'aktif' : 'pasif';
+            await window.storage.set(btn.dataset.key, JSON.stringify(d), false);
+            if (editingKey === btn.dataset.key && editingOriginal) editingOriginal.durum = d.durum;
+            loadSaved();
+          } catch (e) { console.error('Durum değiştirilemedi:', e); }
         });
       });
     } catch (e) {
@@ -1124,7 +1312,7 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
       m2Net: document.getElementById('m2Net').value,
       m2AcikAlan: document.getElementById('m2AcikAlan').value,
       odaSayisi: document.getElementById('odaSayisi').value,
-      konutTipi: radioValue('konutTipi'),
+      konutTipi: radioLabel('konutTipi'),
       asansor: radioValue('asansor') === 'Var',
       otopark: document.getElementById('otopark').value !== 'Yok',
       otoparkTuru: document.getElementById('otopark').value,
@@ -1147,6 +1335,7 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
         return cover ? [cover.dataUrl].concat(rest) : rest;
       })(),
       danismanNotu: document.getElementById('danismanNotu').value,
+      durum: 'aktif',
       createdAt: new Date().toISOString()
     };
     const saveMsg = document.getElementById('saveMsg');
@@ -1154,11 +1343,23 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
     const failMsg = hadPhotos
       ? 'Kayıt başarısız — fotoğraflar tarayıcı depolamasına sığmadı olabilir. Daha az veya daha küçük fotoğraf deneyin.'
       : 'Kayıt sırasında bir sorun oluştu, tekrar deneyin.';
+    // Düzenleme modunda: aynı anahtara yazılır, createdAt/durum ve formda
+    // bulunmayan alanlar (örn. kaynak) orijinal kayıttan korunur.
+    const isEditing = !!editingKey;
+    let saveKey = isEditing ? editingKey : genId();
+    let toSave = record;
+    if (isEditing) {
+      toSave = Object.assign({}, editingOriginal || {}, record);
+      toSave.durum = (editingOriginal && editingOriginal.durum) || 'aktif';
+      toSave.createdAt = (editingOriginal && editingOriginal.createdAt) || record.createdAt;
+      toSave.updatedAt = new Date().toISOString();
+    }
     try {
-      const result = await window.storage.set(genId(), JSON.stringify(record), false);
+      const result = await window.storage.set(saveKey, JSON.stringify(toSave), false);
       if (result) {
+        if (isEditing) exitEditMode(false);
         saveMsg.style.color = 'var(--green)';
-        saveMsg.textContent = 'Portföy kaydedildi.';
+        saveMsg.textContent = isEditing ? 'Değişiklikler kaydedildi.' : 'Portföy kaydedildi.';
         e.target.reset();
         mahalleSelect.innerHTML = '<option value="">Önce ilçe seçin</option>';
         uploadedPhotos = [];
