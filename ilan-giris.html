@@ -93,6 +93,10 @@
   }
   .toc a:hover{ background:var(--yellow-soft); color:var(--navy); }
   .toc-toggle{ display:none; }
+  .toc-cap{ font-size:0.64rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--navy); font-weight:800; font-family:'Plus Jakarta Sans',sans-serif; margin:14px 10px 5px; }
+  .toc a.toc-lead{ font-weight:700; color:var(--navy); }
+  .toc a.toc-lead.saved{ background:var(--yellow-soft); }
+  @media (min-width:901px){ .toc a.toc-sub{ padding-left:20px; } }
   @media (max-width:900px){
     /* Tek kolona indir ve savedListWrap'in inline grid-column:2'sini etkisizleştir */
     .layout{ display:block; }
@@ -121,6 +125,9 @@
     .toc-body h4{ display:none; }
     .toc a{ border:1px solid var(--border); padding:8px 13px; }
     .toc a:hover{ border-color:var(--yellow-dark); }
+    .toc-cap{ flex-basis:100%; width:100%; margin:8px 2px 0; }
+    .toc a.toc-lead{ border-color:var(--navy); }
+    .toc a.toc-lead.saved{ background:var(--yellow); color:var(--navy); border-color:var(--yellow); }
   }
 
   /* ---------- PANELS ---------- */
@@ -394,23 +401,26 @@
       </button>
       <div class="toc-body" id="tocBody">
       <h4>Bölümler</h4>
-      <a href="#import">↑ Toplu İçe Aktar</a>
-      <a href="#aciklamaPanel">★ İlan Açıklaması</a>
-      <a href="#fotoPanel">★ Fotoğraflar</a>
-      <a href="#s1">1. Portföy Bilgileri</a>
-      <a href="#s2">2. Mal Sahibi Bilgileri</a>
-      <a href="#s3">3. Taşınmaz Bilgileri</a>
-      <a href="#s4">4. Finans Bilgileri</a>
-      <a href="#s5">5. Detay Bilgileri</a>
-      <a href="#s6">6. İç Özellikler</a>
-      <a href="#s7">7. Dış Özellikler</a>
-      <a href="#s8">8. Konut Tipi</a>
-      <a href="#s9">9. Erişilebilirlik</a>
-      <a href="#s10">10. Evrak Kontrol</a>
-      <a href="#s11">11. Ofis Kontrol</a>
-      <a href="#s12">12. Yayın Kanalları</a>
-      <a href="#s13">13. Danışman Notu</a>
-      <a href="#s14">14. Müşteri Görüşme Takip</a>
+      <a href="#import" class="toc-lead">↑ Toplu İçe Aktar (JSON)</a>
+      <div class="toc-cap">Portföy Ekle</div>
+      <a href="#aciklamaPanel" class="toc-sub">★ İlan Açıklaması</a>
+      <a href="#fotoPanel" class="toc-sub">★ Fotoğraflar</a>
+      <a href="#s1" class="toc-sub">1. Portföy Bilgileri</a>
+      <a href="#s2" class="toc-sub">2. Mal Sahibi Bilgileri</a>
+      <a href="#s3" class="toc-sub">3. Taşınmaz Bilgileri</a>
+      <a href="#s4" class="toc-sub">4. Finans Bilgileri</a>
+      <a href="#s5" class="toc-sub">5. Detay Bilgileri</a>
+      <a href="#s6" class="toc-sub">6. İç Özellikler</a>
+      <a href="#s7" class="toc-sub">7. Dış Özellikler</a>
+      <a href="#s8" class="toc-sub">8. Konut Tipi</a>
+      <a href="#s9" class="toc-sub">9. Erişilebilirlik</a>
+      <a href="#s10" class="toc-sub">10. Evrak Kontrol</a>
+      <a href="#s11" class="toc-sub">11. Ofis Kontrol</a>
+      <a href="#s12" class="toc-sub">12. Yayın Kanalları</a>
+      <a href="#s13" class="toc-sub">13. Danışman Notu</a>
+      <a href="#s14" class="toc-sub">14. Müşteri Görüşme Takip</a>
+      <div class="toc-cap">Yönetim</div>
+      <a href="#savedListWrap" class="toc-lead saved">📁 Kayıtlı Portföyler</a>
       </div>
     </nav>
 
