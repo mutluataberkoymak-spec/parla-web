@@ -170,6 +170,7 @@
   .l-thumb .plan::before, .l-thumb .plan::after{ content:''; position:absolute; background:#C7C7C0; }
   .l-thumb .plan::before{ top:0; bottom:0; left:40%; width:1px; }
   .l-thumb .plan::after{ left:0; right:0; top:55%; height:1px; }
+  .l-thumb img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
   .l-badge{ position:absolute; top:5px; left:5px; font-size:0.6rem; font-weight:700; padding:3px 6px; }
   .badge-sale{ background:var(--green); color:#fff; }
   .badge-rent{ background:var(--link); color:#fff; }
@@ -195,14 +196,19 @@
   .modal-overlay{ position:fixed; inset:0; background:rgba(20,26,34,0.6); z-index:300; display:none; align-items:center; justify-content:center; padding:20px; }
   .modal-overlay.open{ display:flex; }
   .modal-box{ background:#fff; max-width:640px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,0.3); }
-  .modal-photo{ height:260px; background:var(--bg-panel); position:relative; border-bottom:1px solid var(--border); }
+  .modal-photo{ height:340px; background:var(--bg-panel); position:relative; border-bottom:1px solid var(--border); }
   .modal-photo .plan{ position:absolute; inset:20px; border:1px solid #C7C7C0; }
   .modal-photo .plan::before, .modal-photo .plan::after{ content:''; position:absolute; background:#C7C7C0; }
   .modal-photo .plan::before{ top:0; bottom:0; left:40%; width:1px; }
   .modal-photo .plan::after{ left:0; right:0; top:55%; height:1px; }
   .modal-photo img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
   .modal-photo .l-badge{ position:absolute; top:10px; left:10px; }
-  .modal-close{ position:absolute; top:10px; right:10px; width:32px; height:32px; border:none; background:rgba(0,0,0,0.5); color:#fff; font-size:1.1rem; cursor:pointer; border-radius:50%; }
+  .modal-close{ position:absolute; top:10px; right:10px; width:32px; height:32px; border:none; background:rgba(0,0,0,0.5); color:#fff; font-size:1.1rem; cursor:pointer; border-radius:50%; z-index:2; }
+  .modal-nav{ position:absolute; top:50%; transform:translateY(-50%); width:36px; height:36px; border:none; background:rgba(0,0,0,0.5); color:#fff; font-size:1.1rem; cursor:pointer; border-radius:50%; z-index:2; display:flex; align-items:center; justify-content:center; }
+  .modal-nav.prev{ left:10px; }
+  .modal-nav.next{ right:10px; }
+  .modal-nav:hover{ background:rgba(0,0,0,0.7); }
+  .modal-photo-count{ position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.55); color:#fff; font-size:0.72rem; padding:3px 9px; border-radius:10px; z-index:2; }
   .modal-body{ padding:22px 24px 26px; }
   .modal-body h3{ font-size:1.2rem; color:var(--navy); margin-bottom:6px; }
   .modal-body .loc{ font-size:0.86rem; color:var(--text-soft); margin-bottom:10px; }
@@ -529,68 +535,7 @@
       <button>Ticari</button>
     </div>
 
-    <div class="listing-table">
-      <div class="listing-row" data-il="Balıkesir" data-ilce="Edremit" data-mahalle="Altınkum" data-tip="Satılık" data-emlak="Daire" data-oda="4+1" data-fiyat="7350000" data-m2="200" data-asansor="0" data-otopark="0" data-esyali="0" data-site="0" data-kredi="0" data-balkon="1">
-        <div class="l-thumb"><div class="plan"></div><div class="l-badge badge-sale">SATILIK</div></div>
-        <div class="l-info">
-          <h3>Altınkum'da Çift Teras Ön Cephe Dubleks 4+1 Daire</h3>
-          <div class="loc">Balıkesir / Edremit / Altınkum Mah.</div>
-          <div class="specs"><span><b>4+1</b> Oda</span><span><b>200 m²</b></span><span><b>Kat 3</b></span></div>
-        </div>
-        <div class="l-price"><div class="amount">7.350.000 ₺</div><div class="ref">İlan No: b6f31341</div></div>
-        <button class="l-fav">♡</button>
-      </div>
-      <div class="listing-row" data-il="Balıkesir" data-ilce="Edremit" data-mahalle="Tahtakuşlar" data-tip="Satılık" data-emlak="Villa" data-oda="4+1" data-fiyat="11750000" data-m2="120" data-asansor="0" data-otopark="0" data-esyali="0" data-site="0" data-kredi="1" data-balkon="0">
-        <div class="l-thumb"><div class="plan"></div><div class="l-badge badge-sale">SATILIK</div></div>
-        <div class="l-info">
-          <h3>Tahtakuşlar'da Huzurlu Konumda Yüksek Kredili 4+1 Villa</h3>
-          <div class="loc">Balıkesir / Edremit / Tahtakuşlar Mah.</div>
-          <div class="specs"><span><b>4+1</b> Oda</span><span><b>120 m²</b></span></div>
-        </div>
-        <div class="l-price"><div class="amount">11.750.000 ₺</div><div class="ref">İlan No: bc5ce780</div></div>
-        <button class="l-fav">♡</button>
-      </div>
-      <div class="listing-row" data-il="Balıkesir" data-ilce="Havran" data-mahalle="Kalabak" data-tip="Satılık" data-emlak="Arsa" data-oda="" data-fiyat="1930000" data-m2="1144" data-asansor="0" data-otopark="0" data-esyali="0" data-site="0" data-kredi="0" data-balkon="0">
-        <div class="l-thumb"><div class="plan"></div><div class="l-badge badge-sale">SATILIK</div></div>
-        <div class="l-info">
-          <h3>Kalabak'ta Yola 21m Cepheli 1144 m² Zeytinlik Arsa</h3>
-          <div class="loc">Balıkesir / Havran / Kalabak Mah.</div>
-          <div class="specs"><span><b>Arsa</b></span><span><b>1.144 m²</b></span></div>
-        </div>
-        <div class="l-price"><div class="amount">1.930.000 ₺</div><div class="ref">İlan No: 54a842fa</div></div>
-        <button class="l-fav">♡</button>
-      </div>
-      <div class="listing-row" data-il="Balıkesir" data-ilce="Edremit" data-mahalle="Sarıkız" data-tip="Satılık" data-emlak="Daire" data-oda="2+1" data-fiyat="5250000" data-m2="105" data-asansor="0" data-otopark="0" data-esyali="0" data-site="0" data-kredi="1" data-balkon="0">
-        <div class="l-thumb"><div class="plan"></div><div class="l-badge badge-sale">SATILIK</div></div>
-        <div class="l-info">
-          <h3>Sarıkız'da Denize 50m Ara Kat Ön Cephe 2+1 Krediye Uygun</h3>
-          <div class="loc">Balıkesir / Edremit / Sarıkız Mah.</div>
-          <div class="specs"><span><b>2+1</b> Oda</span><span><b>105 m²</b></span><span><b>Kat 2</b></span></div>
-        </div>
-        <div class="l-price"><div class="amount">5.250.000 ₺</div><div class="ref">İlan No: 52f990e8</div></div>
-        <button class="l-fav">♡</button>
-      </div>
-      <div class="listing-row" data-il="Balıkesir" data-ilce="Edremit" data-mahalle="Güre" data-tip="Satılık" data-emlak="Müstakil Ev" data-oda="3+1" data-fiyat="16500000" data-m2="140" data-asansor="0" data-otopark="0" data-esyali="0" data-site="0" data-kredi="0" data-balkon="0">
-        <div class="l-thumb"><div class="plan"></div><div class="l-badge badge-sale">SATILIK</div></div>
-        <div class="l-info">
-          <h3>Güre Köyde 231 m² Arsada Tam Müstakil 3+1 Ev</h3>
-          <div class="loc">Balıkesir / Edremit / Güre Mah.</div>
-          <div class="specs"><span><b>3+1</b> Oda</span><span><b>140 m²</b></span></div>
-        </div>
-        <div class="l-price"><div class="amount">16.500.000 ₺</div><div class="ref">İlan No: e2cbb329</div></div>
-        <button class="l-fav">♡</button>
-      </div>
-      <div class="listing-row" data-il="Balıkesir" data-ilce="Edremit" data-mahalle="İkizçay" data-tip="Satılık" data-emlak="Ticari" data-oda="" data-fiyat="3100000" data-m2="20" data-asansor="0" data-otopark="0" data-esyali="0" data-site="0" data-kredi="0" data-balkon="0">
-        <div class="l-thumb"><div class="plan"></div><div class="l-badge badge-sale">SATILIK</div></div>
-        <div class="l-info">
-          <h3>İkizçay'da Yatırımlık Satılık Dükkan &amp; Ofis</h3>
-          <div class="loc">Balıkesir / Edremit / İkizçay Mah.</div>
-          <div class="specs"><span><b>Dükkan</b></span><span><b>20 m²</b></span></div>
-        </div>
-        <div class="l-price"><div class="amount">3.100.000 ₺</div><div class="ref">İlan No: 9c7fe952</div></div>
-        <button class="l-fav">♡</button>
-      </div>
-    </div>
+    <div class="listing-table" id="featuredListingTable"></div>
     <div class="view-all"><a href="#portfoy" class="btn-outline">Tüm İlanları Gör</a></div>
   </div>
 </section>
@@ -623,38 +568,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head"><h2>Yeni Eklenen İlanlar</h2><a href="#portfoy" class="sec-link">Tüm ilanlar →</a></div>
-    <div class="listing-table">
-      <div class="listing-row" data-il="Balıkesir" data-ilce="Edremit" data-mahalle="Altınkum" data-tip="Satılık" data-emlak="Daire" data-oda="1+1" data-fiyat="4125000" data-m2="60" data-asansor="0" data-otopark="0" data-esyali="0" data-site="0" data-kredi="0" data-balkon="1">
-        <div class="l-thumb"><div class="plan"></div><div class="l-badge badge-sale">SATILIK</div></div>
-        <div class="l-info">
-          <h3>Altınkum'da Ön Cephe Cam Balkonlu 1+1 Daire</h3>
-          <div class="loc">Balıkesir / Edremit / Altınkum Mah.</div>
-          <div class="specs"><span><b>1+1</b> Oda</span><span><b>60 m²</b></span><span><b>Yüksek Giriş</b></span></div>
-        </div>
-        <div class="l-price"><div class="amount">4.125.000 ₺</div><div class="ref">İlan No: 4e9fc6ee</div></div>
-        <button class="l-fav">♡</button>
-      </div>
-      <div class="listing-row" data-il="Balıkesir" data-ilce="Burhaniye" data-mahalle="Hacıahmet" data-tip="Satılık" data-emlak="Villa" data-oda="6+1" data-fiyat="20000000" data-m2="225" data-asansor="0" data-otopark="0" data-esyali="0" data-site="0" data-kredi="0" data-balkon="0">
-        <div class="l-thumb"><div class="plan"></div><div class="l-badge badge-sale">SATILIK</div></div>
-        <div class="l-info">
-          <h3>Hacıahmet'te 387 m² Arsada Özel Yapım Tam Müstakil Villa</h3>
-          <div class="loc">Balıkesir / Burhaniye / Hacıahmet Mah.</div>
-          <div class="specs"><span><b>6+1</b> Oda</span><span><b>225 m²</b></span></div>
-        </div>
-        <div class="l-price"><div class="amount">20.000.000 ₺</div><div class="ref">İlan No: a2c293e4</div></div>
-        <button class="l-fav">♡</button>
-      </div>
-      <div class="listing-row" data-il="Balıkesir" data-ilce="İvrindi" data-mahalle="7 Eylül" data-tip="Satılık" data-emlak="Arsa" data-oda="" data-fiyat="8000000" data-m2="13209" data-asansor="0" data-otopark="0" data-esyali="0" data-site="0" data-kredi="0" data-balkon="0">
-        <div class="l-thumb"><div class="plan"></div><div class="l-badge badge-sale">SATILIK</div></div>
-        <div class="l-info">
-          <h3>7 Eylül'de Yola Cepheli 13.209 m² Satılık Tarla</h3>
-          <div class="loc">Balıkesir / İvrindi / 7 Eylül Mah.</div>
-          <div class="specs"><span><b>Tarla</b></span><span><b>13.209 m²</b></span></div>
-        </div>
-        <div class="l-price"><div class="amount">8.000.000 ₺</div><div class="ref">İlan No: 2a19560b</div></div>
-        <button class="l-fav">♡</button>
-      </div>
-    </div>
+    <div class="listing-table" id="newListingTable"></div>
   </div>
 </section>
 
@@ -783,6 +697,9 @@
       <img id="modalImg" style="display:none;" alt="">
       <div class="plan" id="modalPlan"></div>
       <div class="l-badge" id="modalBadge"></div>
+      <button class="modal-nav prev" id="modalPrev" aria-label="Önceki fotoğraf" style="display:none;">‹</button>
+      <button class="modal-nav next" id="modalNext" aria-label="Sonraki fotoğraf" style="display:none;">›</button>
+      <div class="modal-photo-count" id="modalPhotoCount" style="display:none;"></div>
       <button class="modal-close" id="modalClose" aria-label="Kapat">✕</button>
     </div>
     <div class="modal-body">
@@ -984,8 +901,38 @@
   const modalRef = document.getElementById('modalRef');
   const modalDesc = document.getElementById('modalDesc');
   const modalFeatChips = document.getElementById('modalFeatChips');
+  const modalPrev = document.getElementById('modalPrev');
+  const modalNext = document.getElementById('modalNext');
+  const modalPhotoCount = document.getElementById('modalPhotoCount');
 
   const FEATURE_LABELS = { asansor: 'Asansör', otopark: 'Otopark', esyali: 'Eşyalı', site: 'Site İçinde', kredi: 'Krediye Uygun', balkon: 'Balkon' };
+
+  let modalPhotos = [];
+  let modalPhotoIndex = 0;
+
+  function showModalPhoto(i) {
+    if (!modalPhotos.length) {
+      modalImg.removeAttribute('src');
+      modalImg.style.display = 'none';
+      modalPlan.style.display = 'block';
+      modalPrev.style.display = 'none';
+      modalNext.style.display = 'none';
+      modalPhotoCount.style.display = 'none';
+      return;
+    }
+    modalPhotoIndex = (i + modalPhotos.length) % modalPhotos.length;
+    modalImg.src = modalPhotos[modalPhotoIndex];
+    modalImg.style.display = 'block';
+    modalPlan.style.display = 'none';
+    const multi = modalPhotos.length > 1;
+    modalPrev.style.display = multi ? 'flex' : 'none';
+    modalNext.style.display = multi ? 'flex' : 'none';
+    modalPhotoCount.style.display = multi ? 'block' : 'none';
+    modalPhotoCount.textContent = `${modalPhotoIndex + 1} / ${modalPhotos.length}`;
+  }
+
+  modalPrev.addEventListener('click', () => showModalPhoto(modalPhotoIndex - 1));
+  modalNext.addEventListener('click', () => showModalPhoto(modalPhotoIndex + 1));
 
   function openListingModal(row) {
     const h3 = row.querySelector('h3');
@@ -1003,17 +950,8 @@
     modalBadge.textContent = badge ? badge.textContent : '';
     modalBadge.className = 'l-badge ' + (badge ? badge.className.replace('l-badge', '').trim() : 'badge-sale');
 
-    let photos = [];
-    try { photos = JSON.parse(row.dataset.fotograflar || '[]'); } catch (e) { photos = []; }
-    if (photos.length) {
-      modalImg.src = photos[0];
-      modalImg.style.display = 'block';
-      modalPlan.style.display = 'none';
-    } else {
-      modalImg.removeAttribute('src');
-      modalImg.style.display = 'none';
-      modalPlan.style.display = 'block';
-    }
+    try { modalPhotos = JSON.parse(row.dataset.fotograflar || '[]'); } catch (e) { modalPhotos = []; }
+    showModalPhoto(0);
 
     const desc = row.dataset.aciklama || '';
     if (desc) {
@@ -1040,7 +978,12 @@
   document.getElementById('modalClose').addEventListener('click', closeListingModal);
   document.getElementById('modalContactBtn').addEventListener('click', closeListingModal);
   listingModal.addEventListener('click', (e) => { if (e.target === listingModal) closeListingModal(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeListingModal(); });
+  document.addEventListener('keydown', (e) => {
+    if (!listingModal.classList.contains('open')) return;
+    if (e.key === 'Escape') closeListingModal();
+    else if (e.key === 'ArrowLeft') showModalPhoto(modalPhotoIndex - 1);
+    else if (e.key === 'ArrowRight') showModalPhoto(modalPhotoIndex + 1);
+  });
 
   document.addEventListener('click', (e) => {
     if (e.target.closest('.l-fav')) return;
@@ -1189,8 +1132,13 @@
     row.dataset.extraFeatures = JSON.stringify(uniqueFeatures);
     row.dataset.fotograflar = JSON.stringify(rec.fotograflar || []);
 
+    const cover = (rec.fotograflar && rec.fotograflar[0]) || '';
+    const thumbInner = cover
+      ? `<img src="${esc(cover)}" alt="${esc(title)}" loading="lazy">`
+      : `<div class="plan"></div>`;
+
     row.innerHTML = `
-      <div class="l-thumb"><div class="plan"></div><div class="l-badge ${badgeClass}">${tip.toUpperCase()}</div></div>
+      <div class="l-thumb">${thumbInner}<div class="l-badge ${badgeClass}">${tip.toUpperCase()}</div></div>
       <div class="l-info">
         <h3>${esc(title)}</h3>
         <div class="loc">${esc(rec.il || 'Balıkesir')} / ${esc(rec.ilce || '')} / ${esc(rec.mahalle || '')} Mah.</div>
@@ -1202,13 +1150,34 @@
     return row;
   }
 
+  function bindRowInteractions(table) {
+    table.querySelectorAll('.l-fav').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.textContent = btn.textContent === '♡' ? '♥' : '♡';
+        btn.style.color = btn.textContent === '♥' ? 'var(--red)' : '';
+        btn.style.borderColor = btn.textContent === '♥' ? 'var(--red)' : '';
+      });
+    });
+  }
+
+  async function loadStaticListings() {
+    try {
+      const res = await fetch('data/listings.json');
+      if (!res.ok) return [];
+      return await res.json();
+    } catch (e) {
+      console.error('Sabit ilanlar yüklenemedi:', e);
+      return [];
+    }
+  }
+
   async function loadPanelListings() {
     if (!window.storage) return;
     try {
       const res = await window.storage.list('listings:');
       const keys = (res && res.keys) || [];
       if (!keys.length) return;
-      const table = document.querySelector('#portfoy .listing-table');
+      const table = document.getElementById('featuredListingTable');
       if (!table) return;
       for (const key of keys) {
         try {
@@ -1218,20 +1187,21 @@
           table.appendChild(renderListingRow(rec));
         } catch (e) { /* bozuk kayıt atlanır */ }
       }
-      // Yeni eklenen favori butonlarını da çalışır hale getir
-      table.querySelectorAll('.l-fav').forEach(btn => {
-        btn.addEventListener('click', () => {
-          btn.textContent = btn.textContent === '♡' ? '♥' : '♡';
-          btn.style.color = btn.textContent === '♥' ? 'var(--red)' : '';
-          btn.style.borderColor = btn.textContent === '♥' ? 'var(--red)' : '';
-        });
-      });
+      bindRowInteractions(table);
     } catch (e) {
       console.error('Panel ilanları yüklenemedi:', e);
     }
   }
 
   (async function init() {
+    const listings = await loadStaticListings();
+    const featuredTable = document.getElementById('featuredListingTable');
+    const newTable = document.getElementById('newListingTable');
+    listings.forEach((rec) => featuredTable.appendChild(renderListingRow(rec)));
+    bindRowInteractions(featuredTable);
+    listings.slice(-3).forEach((rec) => newTable.appendChild(renderListingRow(rec)));
+    bindRowInteractions(newTable);
+
     await loadPanelListings();
     refreshIlOptions();
     updateCount(document.querySelectorAll('.listing-row').length);

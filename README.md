@@ -9,13 +9,16 @@ Edremit / Balıkesir merkezli Parla Gayrimenkul için kurumsal web sitesi ve ila
 | `index.html` | Ana site — arama, il/ilçe/mahalle + daire özellikleri filtresi, ilan listesi (sabit örnek ilanlar + panelden eklenenler), bölge rehberi, iletişim formu, AI asistan |
 | `ilan-giris.html` | Danışman paneli — admin girişi (kullanıcı adı `admin`, şifre `123`) arkasında, 14 bölümlük portföy giriş formu + JSON toplu içe aktarma |
 | `storage.js` | Tarayıcı `localStorage` tabanlı ortak depolama katmanı (`index.html` ve `ilan-giris.html` tarafından kullanılır) |
-| `data/parla_ilanlar_37.json` | Sahibinden'den dışa aktarılan 37 ilanın içe aktarma şablonuna dönüştürülmüş hali |
+| `data/parla_ilanlar_37.json` | Sahibinden'den dışa aktarılan 37 ilanın toplu içe aktarma şablonu (panelden yeni ilan yüklerken örnek/başlangıç noktası) |
+| `data/listings.json` | Sitede herkese görünen 37 ilanın gerçek verisi: başlık, açıklama, fiyat, konum, özellikler ve fotoğraf yolları. `index.html` sayfa açılışında bunu fetch ile okuyup listeye basar |
+| `images/<portföyNo>/NN.jpg` | Her ilanın Sahibinden'den alınan gerçek fotoğrafları, web için sıkıştırılmış (max 1600px genişlik, JPEG kalite 80) hâlde |
 
 ## Yeni Eklenen Özellikler
 
 - **İl / İlçe / Daire Özellikleri filtresi**: Ana sitedeki "Detaylı Filtre" panelinde il, ilçe, mahalle, ilan türü, emlak tipi, oda sayısı, fiyat/m² aralığı yanında artık Asansör, Otopark, Eşyalı, Site İçinde, Krediye Uygun ve Balkon özellik filtreleri de var.
-- **JSON toplu portföy yükleme**: `ilan-giris.html` üst kısmındaki panelden çoklu ilan içeren bir `.json` dosyası yüklenebilir. Şablon örneği sayfada "Şablonu göster" ile görülebilir.
-- **Panelden eklenen ilanlar ana sitede görünür**: Formdan tek tek veya JSON ile toplu eklenen ilanlar, aynı tarayıcıda `index.html` açıldığında otomatik olarak listeye eklenir ve aynı filtrelerden geçer. İlanın açıklaması ve işaretlenen özellikleri "Detayı Göster" bağlantısıyla açılır.
+- **37 ilan, gerçek fotoğraflarıyla birlikte statik olarak sitede**: `data/listings.json` + `images/` üzerinden tüm 37 ilan (toplam ~900 fotoğraf) her ziyaretçiye görünecek şekilde siteye gömüldü. Artık panelden JSON yüklemeye gerek kalmadan gerçek portföy herkes tarafından görülüyor.
+- **İlan detay modalı ve fotoğraf galerisi**: Bir ilana tıklandığında başlık, açıklama, özellikler ve tüm fotoğrafların ileri/geri (klavye ok tuşlarıyla da) gezilebildiği bir detay penceresi açılır. Kapak fotoğrafı, ilanın fotoğraf listesindeki ilk sıradaki fotoğraftır (Sahibinden'in kendi sıralaması); belirli bir ilanın kapak fotoğrafını değiştirmek isterseniz portföy no'sunu ve istediğiniz fotoğrafı belirtmeniz yeterli.
+- **JSON toplu portföy yükleme (yeni ilanlar için)**: `ilan-giris.html` üst kısmındaki panelden çoklu ilan içeren bir `.json` dosyası yüklenebilir. Bu yol ileride eklenecek yeni ilanlar için hâlâ geçerli, ama unutmayın: panelden eklenen kayıtlar tarayıcı bazlı `localStorage`'da tutulur (bkz. Notlar), 37 ilan gibi herkese görünmez.
 - **Admin girişi**: `ilan-giris.html` artık herkese açık değil. Kullanıcı adı `admin`, şifre `Parla2026!Edremit` ile giriş yapılmadan form görüntülenemez.
   - ⚠️ Bu, **istemci taraflı (client-side)** basit bir kilittir — sayfanın kaynağını (view-source) görebilen biri şifreyi görebilir. Statik bir site (GitHub Pages vb.) olduğu için gerçek/güvenli bir giriş sistemi değildir. Gerçek güvenlik için sunucu taraflı kimlik doğrulama (örn. Netlify/Vercel Functions + oturum yönetimi, ya da Cloudflare Access gibi bir erişim katmanı) gerekir.
 - **Portföy formu genişletildi**: Resmi Parla Portföy Formu şablonına göre Açık Alan m², ayrı İntercom/Görüntülü Diyafon, Yüz Tanıma & Parmak İzi, ayrı Açık/Kapalı Otopark, genişletilmiş Muhit/Ulaşım listeleri, yeni "Manzara Özellikleri" bölümü, "Residence" konut tipi ve "Müşteri Görüşme Takip" (14. bölüm) tablosu eklendi. Ayrıca web sitesinde yayınlanacak "İlan Başlığı" ve "İlan Açıklaması" alanları eklendi.
@@ -53,6 +56,6 @@ git push
 
 ## Notlar
 
-- İlan giriş platformundaki kayıtlar tarayıcı bazlı `localStorage` depolamasıdır; **sadece kaydı oluşturan tarayıcıda görünür**. Çok kullanıcılı, gerçek zamanlı ve herkesin göreceği bir sistem için bir backend + veritabanı (örn. Firebase, Supabase, kendi API'niz) gerekir.
-- Toplu içe aktarma: `ilan-giris.html` üst kısmındaki panelden `data/parla_ilanlar_37.json` dosyasını veya kendi hazırladığınız şablona uygun bir `.json` dosyasını yükleyebilirsiniz.
+- İlk 37 ilan `data/listings.json` + `images/` olarak sitede statik/gömülü durumda — bunlar tüm ziyaretçilere görünür. Bunun **dışında**, `ilan-giris.html` panelinden eklenen yeni kayıtlar hâlâ tarayıcı bazlı `localStorage` depolamasıdır; **sadece kaydı oluşturan tarayıcıda görünür**. Çok kullanıcılı, gerçek zamanlı ve herkesin göreceği bir sistem için bir backend + veritabanı (örn. Firebase, Supabase, kendi API'niz) gerekir.
+- Yeni bir ilanı kalıcı olarak (herkese görünecek şekilde) siteye eklemek için: `data/listings.json`'a elle bir kayıt eklemek ve fotoğraflarını `images/<portföyNo>/` altına koymak gerekir; ya da panelden JSON toplu içe aktarma özelliğini kullanabilirsiniz (yalnızca kendi tarayıcınızda görünür).
 - "Müşteri Görüşme Takip" (bölüm 14) verileri yalnızca kaydedilen portföy kaydının içinde tutulur, web sitesinde gösterilmez.
