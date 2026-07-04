@@ -185,6 +185,15 @@
   .listing-row.hidden-row{ display:none !important; }
   .no-results{ padding:30px 16px; text-align:center; color:var(--text-soft); font-size:0.9rem; display:none; }
   .no-results.show{ display:block; }
+  .filter-section-head{
+    font-family:'Plus Jakarta Sans','Inter',sans-serif; font-size:0.74rem; font-weight:800;
+    letter-spacing:0.06em; text-transform:uppercase; color:var(--navy); margin:2px 0 16px;
+    padding-top:18px; border-top:1px solid var(--border); display:flex; align-items:center; gap:8px;
+  }
+  .filter-section-head::before{ content:''; width:16px; height:4px; border-radius:2px; background:var(--yellow); flex-shrink:0; }
+  .feat-check-row{ display:flex; flex-wrap:wrap; gap:10px 20px; }
+  .feat-check-row label{ display:flex; align-items:center; gap:6px; font-size:0.84rem; font-weight:400; letter-spacing:0; text-transform:none; color:var(--text); margin-bottom:0; }
+  .fbool{ display:flex !important; align-items:center; gap:6px; font-size:0.84rem; font-weight:400 !important; letter-spacing:0 !important; text-transform:none !important; color:var(--text) !important; padding:9px 0 0; margin-bottom:0; }
 
   /* ---------- STATS STRIP ---------- */
   .stats{ background:#fff; border-bottom:1px solid var(--border); }
@@ -568,7 +577,28 @@
 <section style="padding:0 0 30px;">
   <div class="wrap">
     <div class="filter-panel" id="filterPanel">
+      <!-- ÜST GRUP (İlan Bilgileri) — sahibinden Filtrele sırası -->
       <div class="filter-grid">
+        <div class="filter-field">
+          <label>İlan Türü</label>
+          <select id="f-tip">
+            <option value="">Tümü</option>
+            <option value="Satılık">Satılık</option>
+            <option value="Kiralık">Kiralık</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Emlak Tipi</label>
+          <select id="f-emlak">
+            <option value="">Tümü</option>
+            <option value="Daire">Daire</option>
+            <option value="Villa">Villa</option>
+            <option value="Müstakil Ev">Müstakil Ev</option>
+            <option value="Arsa">Arsa</option>
+            <option value="Ticari">Ticari</option>
+            <option value="Ofis">Ofis</option>
+          </select>
+        </div>
         <div class="filter-field">
           <label>İl</label>
           <select id="f-il">
@@ -593,38 +623,7 @@
           </select>
         </div>
         <div class="filter-field">
-          <label>İlan Türü</label>
-          <select id="f-tip">
-            <option value="">Tümü</option>
-            <option value="Satılık">Satılık</option>
-            <option value="Kiralık">Kiralık</option>
-          </select>
-        </div>
-        <div class="filter-field">
-          <label>Emlak Tipi</label>
-          <select id="f-emlak">
-            <option value="">Tümü</option>
-            <option value="Daire">Daire</option>
-            <option value="Villa">Villa</option>
-            <option value="Müstakil Ev">Müstakil Ev</option>
-            <option value="Arsa">Arsa</option>
-            <option value="Ticari">Ticari</option>
-            <option value="Ofis">Ofis</option>
-          </select>
-        </div>
-        <div class="filter-field">
-          <label>Oda Sayısı</label>
-          <select id="f-oda">
-            <option value="">Tümü</option>
-            <option value="1+1">1+1</option>
-            <option value="2+1">2+1</option>
-            <option value="3+1">3+1</option>
-            <option value="4+1">4+1</option>
-            <option value="5+2">5+2</option>
-          </select>
-        </div>
-        <div class="filter-field">
-          <label>Fiyat Aralığı (₺)</label>
+          <label>Fiyat (₺)</label>
           <div class="range-row">
             <input type="number" id="f-fiyat-min" placeholder="Min">
             <span>–</span>
@@ -632,23 +631,192 @@
           </div>
         </div>
         <div class="filter-field">
-          <label>m² Aralığı</label>
+          <label>m² (Brüt)</label>
+          <div class="range-row">
+            <input type="number" id="f-m2brut-min" placeholder="Min">
+            <span>–</span>
+            <input type="number" id="f-m2brut-max" placeholder="Max">
+          </div>
+        </div>
+        <div class="filter-field">
+          <label>m² (Net)</label>
           <div class="range-row">
             <input type="number" id="f-m2-min" placeholder="Min">
             <span>–</span>
             <input type="number" id="f-m2-max" placeholder="Max">
           </div>
         </div>
+        <div class="filter-field">
+          <label>Oda Sayısı</label>
+          <select id="f-oda">
+            <option value="">Tümü</option>
+            <option value="1+0">1+0</option>
+            <option value="1+1">1+1</option>
+            <option value="2+1">2+1</option>
+            <option value="3+1">3+1</option>
+            <option value="4+1">4+1</option>
+            <option value="5+2">5+2</option>
+          </select>
+        </div>
+        <div class="filter-field" style="grid-column:span 2;">
+          <label>Bina Yaşı</label>
+          <div class="feat-check-row">
+            <label><input type="checkbox" class="f-yas" value="0"> 0</label>
+            <label><input type="checkbox" class="f-yas" value="1-5"> 1-5</label>
+            <label><input type="checkbox" class="f-yas" value="6-10"> 6-10</label>
+            <label><input type="checkbox" class="f-yas" value="11-15"> 11-15</label>
+            <label><input type="checkbox" class="f-yas" value="16-20"> 16-20</label>
+            <label><input type="checkbox" class="f-yas" value="21+"> 21+</label>
+          </div>
+        </div>
+        <div class="filter-field">
+          <label>Bulunduğu Kat</label>
+          <select id="f-kat">
+            <option value="">Tümü</option>
+            <option value="bodrum">Bodrum</option>
+            <option value="zemin">Zemin</option>
+            <option value="bahce">Bahçe Katı</option>
+            <option value="1-5">1-5. Kat</option>
+            <option value="6-10">6-10. Kat</option>
+            <option value="10+">10+ Kat</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Kat Sayısı</label>
+          <select id="f-katsayisi">
+            <option value="">Tümü</option>
+            <option value="1-5">1-5</option>
+            <option value="6-10">6-10</option>
+            <option value="11-20">11-20</option>
+            <option value="21+">21+</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Isıtma</label>
+          <select id="f-isitma">
+            <option value="">Tümü</option>
+            <option value="Doğalgaz (Kombi)">Doğalgaz (Kombi)</option>
+            <option value="Doğalgaz (Merkezi)">Doğalgaz (Merkezi)</option>
+            <option value="Klima">Klima</option>
+            <option value="Soba">Soba</option>
+            <option value="Yerden Isıtma">Yerden Isıtma</option>
+            <option value="Elektrikli">Elektrikli</option>
+            <option value="Yok">Yok</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Banyo Sayısı</label>
+          <select id="f-banyo">
+            <option value="">Tümü</option>
+            <option value="1">1+</option>
+            <option value="2">2+</option>
+            <option value="3">3+</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Balkon</label>
+          <label class="fbool"><input type="checkbox" id="f-feat-balkon"> Olsun</label>
+        </div>
+        <div class="filter-field">
+          <label>Asansör</label>
+          <label class="fbool"><input type="checkbox" id="f-feat-asansor"> Olsun</label>
+        </div>
+        <div class="filter-field">
+          <label>Otopark</label>
+          <label class="fbool"><input type="checkbox" id="f-feat-otopark"> Olsun</label>
+        </div>
+        <div class="filter-field">
+          <label>Kullanım Durumu</label>
+          <select id="f-kullanim">
+            <option value="">Tümü</option>
+            <option value="Boş">Boş</option>
+            <option value="Kiracılı">Kiracılı</option>
+            <option value="Mülk Sahibi Oturuyor">Mülk Sahibi Oturuyor</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>Site İçerisinde</label>
+          <label class="fbool"><input type="checkbox" id="f-feat-site"> Olsun</label>
+        </div>
+        <div class="filter-field">
+          <label>Tapu Durumu</label>
+          <select id="f-tapu">
+            <option value="">Tümü</option>
+            <option value="Kat Mülkiyeti">Kat Mülkiyeti</option>
+            <option value="Kat İrtifakı">Kat İrtifakı</option>
+            <option value="Hisseli Tapu">Hisseli Tapu</option>
+            <option value="Müstakil Tapu">Müstakil Tapu</option>
+          </select>
+        </div>
       </div>
+
+      <!-- ÖZELLİKLER -->
+      <div class="filter-section-head">Özellikler</div>
       <div class="filter-field" style="margin-bottom:16px;">
-        <label>Daire Özellikleri</label>
-        <div class="feat-check-row" style="display:flex; flex-wrap:wrap; gap:10px 20px;">
-          <label style="display:flex; align-items:center; gap:6px; font-size:0.84rem; font-weight:400; text-transform:none; color:var(--text);"><input type="checkbox" id="f-feat-asansor"> Asansör</label>
-          <label style="display:flex; align-items:center; gap:6px; font-size:0.84rem; font-weight:400; text-transform:none; color:var(--text);"><input type="checkbox" id="f-feat-otopark"> Otopark</label>
-          <label style="display:flex; align-items:center; gap:6px; font-size:0.84rem; font-weight:400; text-transform:none; color:var(--text);"><input type="checkbox" id="f-feat-esyali"> Eşyalı</label>
-          <label style="display:flex; align-items:center; gap:6px; font-size:0.84rem; font-weight:400; text-transform:none; color:var(--text);"><input type="checkbox" id="f-feat-site"> Site İçinde</label>
-          <label style="display:flex; align-items:center; gap:6px; font-size:0.84rem; font-weight:400; text-transform:none; color:var(--text);"><input type="checkbox" id="f-feat-kredi"> Krediye Uygun</label>
-          <label style="display:flex; align-items:center; gap:6px; font-size:0.84rem; font-weight:400; text-transform:none; color:var(--text);"><input type="checkbox" id="f-feat-balkon"> Balkon</label>
+        <label>Cephe</label>
+        <div class="feat-check-row">
+          <label><input type="checkbox" class="f-cephe" value="Kuzey"> Kuzey</label>
+          <label><input type="checkbox" class="f-cephe" value="Güney"> Güney</label>
+          <label><input type="checkbox" class="f-cephe" value="Doğu"> Doğu</label>
+          <label><input type="checkbox" class="f-cephe" value="Batı"> Batı</label>
+        </div>
+      </div>
+      <div class="filter-grid">
+        <div class="filter-field">
+          <label>İç Özellikler</label>
+          <input type="text" id="f-ic" placeholder="Özellik ara (örn. klima)">
+        </div>
+        <div class="filter-field">
+          <label>Dış Özellikler</label>
+          <input type="text" id="f-dis" placeholder="Özellik ara (örn. güvenlik)">
+        </div>
+        <div class="filter-field">
+          <label>Muhit</label>
+          <input type="text" id="f-muhit" placeholder="Özellik ara (örn. market)">
+        </div>
+        <div class="filter-field">
+          <label>Ulaşım</label>
+          <input type="text" id="f-ulasim" placeholder="Özellik ara (örn. sahil)">
+        </div>
+      </div>
+      <div class="filter-field" style="margin:16px 0;">
+        <label>Manzara</label>
+        <div class="feat-check-row">
+          <label><input type="checkbox" class="f-manzara" value="Deniz"> Deniz</label>
+          <label><input type="checkbox" class="f-manzara" value="Doğa"> Doğa</label>
+          <label><input type="checkbox" class="f-manzara" value="Şehir"> Şehir</label>
+          <label><input type="checkbox" class="f-manzara" value="Göl"> Göl</label>
+        </div>
+      </div>
+      <div class="filter-grid">
+        <div class="filter-field">
+          <label>Konut Tipi</label>
+          <select id="f-konut">
+            <option value="">Tümü</option>
+            <option value="Daire">Daire</option>
+            <option value="Rezidans">Rezidans</option>
+            <option value="Residence">Residence</option>
+            <option value="Müstakil Ev / Villa">Müstakil Ev / Villa</option>
+            <option value="Yazlık">Yazlık</option>
+            <option value="Diğer">Diğer</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- DİĞER KRİTERLER -->
+      <div class="filter-section-head">Diğer Kriterler</div>
+      <div class="filter-grid">
+        <div class="filter-field">
+          <label>Arama Kelimesi</label>
+          <input type="text" id="f-kelime" placeholder="Başlık, mahalle, özellik...">
+        </div>
+        <div class="filter-field">
+          <label>Eşyalı</label>
+          <label class="fbool"><input type="checkbox" id="f-feat-esyali"> Olsun</label>
+        </div>
+        <div class="filter-field">
+          <label>Krediye Uygun</label>
+          <label class="fbool"><input type="checkbox" id="f-feat-kredi"> Olsun</label>
         </div>
       </div>
       <div class="filter-actions">
@@ -909,6 +1077,40 @@
     mahalleSelect.innerHTML = '<option value="">Tümü</option>' + list.map(m => `<option value="${m}">${m}</option>`).join('');
   });
 
+  const trLow = (s) => String(s == null ? '' : s).toLocaleLowerCase('tr');
+  const parseJSONArr = (v) => { try { const a = JSON.parse(v || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+  const checkedValues = (selector) => Array.from(document.querySelectorAll(selector))
+    .filter((c) => c.checked).map((c) => c.value);
+
+  // Bina yaşı aralık jetonu (0 / 1-5 / 6-10 / 11-15 / 16-20 / 21+) sayısal değeri kapsıyor mu?
+  function yasInToken(val, token) {
+    if (val === '' || val == null || isNaN(val)) return false;
+    const n = Number(val);
+    if (token === '0') return n === 0;
+    if (token === '21+') return n >= 21;
+    const [lo, hi] = token.split('-').map(Number);
+    return n >= lo && n <= hi;
+  }
+  // Bulunduğu kat select değeri sayısal kata uyuyor mu?
+  function katMatch(token, val) {
+    if (val === '' || val == null || isNaN(val)) return false;
+    const n = Number(val);
+    if (token === 'bodrum') return n < 0;
+    if (token === 'zemin') return n === 0;
+    if (token === 'bahce') return false; // sayısal karşılığı yok
+    if (token === '10+') return n > 10;
+    const [lo, hi] = token.split('-').map(Number);
+    return n >= lo && n <= hi;
+  }
+  // Kat sayısı select değeri sayısal toplam kata uyuyor mu?
+  function katSayisiMatch(token, val) {
+    if (val === '' || val == null || isNaN(val)) return false;
+    const n = Number(val);
+    if (token === '21+') return n >= 21;
+    const [lo, hi] = token.split('-').map(Number);
+    return n >= lo && n <= hi;
+  }
+
   function applyFilters() {
     const il = document.getElementById('f-il').value;
     const ilce = ilceSelect.value;
@@ -920,6 +1122,23 @@
     const fiyatMax = parseFloat(document.getElementById('f-fiyat-max').value) || Infinity;
     const m2Min = parseFloat(document.getElementById('f-m2-min').value) || 0;
     const m2Max = parseFloat(document.getElementById('f-m2-max').value) || Infinity;
+    const m2bMin = parseFloat(document.getElementById('f-m2brut-min').value) || 0;
+    const m2bMax = parseFloat(document.getElementById('f-m2brut-max').value) || Infinity;
+    const kat = document.getElementById('f-kat').value;
+    const katSayisi = document.getElementById('f-katsayisi').value;
+    const isitma = trLow(document.getElementById('f-isitma').value);
+    const banyoMin = parseFloat(document.getElementById('f-banyo').value) || 0;
+    const kullanim = trLow(document.getElementById('f-kullanim').value);
+    const tapu = trLow(document.getElementById('f-tapu').value);
+    const konut = trLow(document.getElementById('f-konut').value);
+    const yasTokens = checkedValues('.f-yas');
+    const cepheVals = checkedValues('.f-cephe').map(trLow);
+    const manzaraVals = checkedValues('.f-manzara').map(trLow);
+    const icAra = trLow(document.getElementById('f-ic').value.trim());
+    const disAra = trLow(document.getElementById('f-dis').value.trim());
+    const muhitAra = trLow(document.getElementById('f-muhit').value.trim());
+    const ulasimAra = trLow(document.getElementById('f-ulasim').value.trim());
+    const kelime = trLow(document.getElementById('f-kelime').value.trim());
     const needAsansor = document.getElementById('f-feat-asansor').checked;
     const needOtopark = document.getElementById('f-feat-otopark').checked;
     const needEsyali = document.getElementById('f-feat-esyali').checked;
@@ -937,6 +1156,15 @@
       const rOda = row.dataset.oda || '';
       const rFiyat = parseFloat(row.dataset.fiyat) || 0;
       const rM2 = parseFloat(row.dataset.m2) || 0;
+      const rM2b = parseFloat(row.dataset.m2Brut);
+      const rBanyo = parseFloat(row.dataset.banyo);
+      const rIc = trLow(parseJSONArr(row.dataset.ic).join(' '));
+      const rDis = trLow(parseJSONArr(row.dataset.dis).join(' '));
+      const rMuhit = trLow(parseJSONArr(row.dataset.muhit).join(' '));
+      const rUlasim = trLow(parseJSONArr(row.dataset.ulasim).join(' '));
+      const rCephe = parseJSONArr(row.dataset.cephe).map(trLow);
+      const rManzara = parseJSONArr(row.dataset.manzara).map(trLow);
+      const rOzet = trLow((row.textContent || '') + ' ' + (row.dataset.ozellikler || ''));
 
       const match = (!il || rIl === il)
         && (!ilce || rIlce === ilce)
@@ -946,6 +1174,22 @@
         && (!oda || rOda === oda)
         && rFiyat >= fiyatMin && rFiyat <= fiyatMax
         && rM2 >= m2Min && rM2 <= m2Max
+        && (!(m2bMin > 0 || m2bMax !== Infinity) || (!isNaN(rM2b) && rM2b >= m2bMin && rM2b <= m2bMax))
+        && (!yasTokens.length || yasTokens.some((t) => yasInToken(row.dataset.binaYasi, t)))
+        && (!kat || katMatch(kat, row.dataset.kat))
+        && (!katSayisi || katSayisiMatch(katSayisi, row.dataset.katSayisi))
+        && (!isitma || trLow(row.dataset.isitma) === isitma)
+        && (!banyoMin || (!isNaN(rBanyo) && rBanyo >= banyoMin))
+        && (!kullanim || trLow(row.dataset.kullanim) === kullanim)
+        && (!tapu || trLow(row.dataset.tapu) === tapu)
+        && (!konut || trLow(row.dataset.konut) === konut)
+        && (!cepheVals.length || cepheVals.some((v) => rCephe.includes(v)))
+        && (!manzaraVals.length || manzaraVals.some((v) => rManzara.includes(v)))
+        && (!icAra || rIc.includes(icAra))
+        && (!disAra || rDis.includes(disAra))
+        && (!muhitAra || rMuhit.includes(muhitAra))
+        && (!ulasimAra || rUlasim.includes(ulasimAra))
+        && (!kelime || rOzet.includes(kelime))
         && (!needAsansor || row.dataset.asansor === '1')
         && (!needOtopark || row.dataset.otopark === '1')
         && (!needEsyali || row.dataset.esyali === '1')
@@ -1295,6 +1539,27 @@
     row.dataset.muhit = JSON.stringify(Array.isArray(rec.muhitOzellikleri) ? rec.muhitOzellikleri : []);
     row.dataset.ulasim = JSON.stringify(Array.isArray(rec.ulasimOzellikleri) ? rec.ulasimOzellikleri : []);
     row.dataset.manzara = JSON.stringify(Array.isArray(rec.manzaraOzellikleri) ? rec.manzaraOzellikleri : []);
+    // Yeni temel detay alanları (panelden eklenen zengin ilanlar için)
+    row.dataset.m2Brut = rec.m2Brut || '';
+    row.dataset.binaYasi = (rec.binaYasi != null ? rec.binaYasi : '');
+    row.dataset.kat = (rec.kat != null ? rec.kat : '');
+    row.dataset.katSayisi = (rec.katSayisi != null ? rec.katSayisi : '');
+    row.dataset.banyo = (rec.banyoSayisi != null ? rec.banyoSayisi : '');
+    row.dataset.isitma = rec.isitma || '';
+    row.dataset.kullanim = rec.kullanimDurumu || '';
+    row.dataset.tapu = rec.tapuDurumu || '';
+    row.dataset.konut = rec.konutTipi || '';
+    // Tüm kategorize özelliklerin + temel açıklayıcı alanların birleşik, küçük harfe
+    // indirgenmiş metni ("Arama Kelimesi" kutusu için — örn. "klima", "güvenlik").
+    row.dataset.ozellikler = [].concat(
+      Array.isArray(rec.icOzellikler) ? rec.icOzellikler : [],
+      Array.isArray(rec.disOzellikler) ? rec.disOzellikler : [],
+      Array.isArray(rec.muhitOzellikleri) ? rec.muhitOzellikleri : [],
+      Array.isArray(rec.ulasimOzellikleri) ? rec.ulasimOzellikleri : [],
+      Array.isArray(rec.cephe) ? rec.cephe : [],
+      Array.isArray(rec.manzaraOzellikleri) ? rec.manzaraOzellikleri : [],
+      [rec.isitma || '', rec.kullanimDurumu || '', rec.tapuDurumu || '']
+    ).join(' ').toLocaleLowerCase('tr');
     row.dataset.fotograflar = JSON.stringify(rec.fotograflar || []);
 
     const cover = (rec.fotograflar && rec.fotograflar[0]) || '';
