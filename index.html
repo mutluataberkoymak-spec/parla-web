@@ -1058,23 +1058,52 @@
   });
 
   // ---- Detaylı Filtre ----
-  const mahalleMap = {
-    'Edremit': ['Altınkum','Akçay','Sarıkız','Tahtakuşlar','Güre','Zeytinli','Kadıköy','Kızılkeçili','Mehmetalan','Ortaoba','Turhanbey','İkizçay'],
-    'Havran': ['Halılar','Kalabak','Kocadağ','Küçükdere'],
-    'Burhaniye': ['Hacıahmet','Çoruk'],
-    'İvrindi': ['7 Eylül','Korucu'],
-    'Bandırma': ['Yenice']
-  };
-
   const filterToggle = document.getElementById('filterToggle');
   const filterPanel = document.getElementById('filterPanel');
   filterToggle.addEventListener('click', () => filterPanel.classList.toggle('open'));
 
   const ilceSelect = document.getElementById('f-ilce');
   const mahalleSelect = document.getElementById('f-mahalle');
+  const hsIlceSelect = document.getElementById('hs-ilce');
+
+  // İlçe ve mahalle listelerini sabit yazmak yerine sitedeki gerçek ilanlardan türetir.
+  // Böylece Balıkesir genelindeki tüm ilçe ve mahalleler (ve ileride eklenecek yeni bölgeler) otomatik listelenir.
+  function buildIlceMahalleMap() {
+    const map = {};
+    document.querySelectorAll('.listing-row').forEach((row) => {
+      const ilce = row.dataset.ilce;
+      const mahalle = row.dataset.mahalle;
+      if (!ilce) return;
+      if (!map[ilce]) map[ilce] = new Set();
+      if (mahalle) map[ilce].add(mahalle);
+    });
+    return map;
+  }
+
+  function refreshIlceMahalleOptions() {
+    const map = buildIlceMahalleMap();
+    const ilceler = Array.from(new Set(Object.keys(map))).sort((a, b) => a.localeCompare(b, 'tr'));
+
+    [ilceSelect, hsIlceSelect].forEach((select) => {
+      if (!select) return;
+      const current = select.value;
+      const firstOption = select === hsIlceSelect
+        ? '<option value="">Balıkesir (Tümü)</option>'
+        : '<option value="">Tümü</option>';
+      select.innerHTML = firstOption + ilceler.map((ilce) => `<option value="${ilce}">${ilce}</option>`).join('');
+      if (ilceler.includes(current)) select.value = current;
+    });
+
+    const list = Array.from(map[ilceSelect.value] || []).sort((a, b) => a.localeCompare(b, 'tr'));
+    const currentMahalle = mahalleSelect.value;
+    mahalleSelect.innerHTML = '<option value="">Tümü</option>' + list.map((m) => `<option value="${m}">${m}</option>`).join('');
+    if (list.includes(currentMahalle)) mahalleSelect.value = currentMahalle;
+  }
+
   ilceSelect.addEventListener('change', () => {
-    const list = mahalleMap[ilceSelect.value] || [];
-    mahalleSelect.innerHTML = '<option value="">Tümü</option>' + list.map(m => `<option value="${m}">${m}</option>`).join('');
+    const map = buildIlceMahalleMap();
+    const list = Array.from(map[ilceSelect.value] || []).sort((a, b) => a.localeCompare(b, 'tr'));
+    mahalleSelect.innerHTML = '<option value="">Tümü</option>' + list.map((m) => `<option value="${m}">${m}</option>`).join('');
   });
 
   const trLow = (s) => String(s == null ? '' : s).toLocaleLowerCase('tr');
@@ -1637,6 +1666,7 @@
 
     await loadPanelListings();
     refreshIlOptions();
+    refreshIlceMahalleOptions();
     updateCount(document.querySelectorAll('.listing-row').length);
   })();
 
