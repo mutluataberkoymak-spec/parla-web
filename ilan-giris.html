@@ -263,6 +263,23 @@
   .btn-cancel:hover{ border-color:var(--yellow-dark); background:var(--yellow-soft); }
   .empty-note{ font-size:0.86rem; color:var(--text-soft); font-style:italic; }
 
+  /* ---------- SAVED LIST FILTER BAR ---------- */
+  .saved-filter{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:12px; align-items:end;
+    background:#fff; border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow-sm); padding:16px 18px; margin-bottom:16px;
+  }
+  .saved-filter .sf-field label{ font-size:0.66rem; font-weight:700; letter-spacing:0.05em; color:var(--text-soft); text-transform:uppercase; display:block; margin-bottom:6px; }
+  .saved-filter select, .saved-filter input{
+    width:100%; border:1px solid var(--border); padding:9px 11px; font-family:'Inter',sans-serif;
+    font-size:0.84rem; color:var(--text); background:#fff; border-radius:var(--radius-sm);
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .saved-filter select:focus, .saved-filter input:focus{ outline:none; border-color:var(--navy); box-shadow:0 0 0 3px rgba(27,42,60,0.08); }
+  .saved-filter .sf-count{ grid-column:1 / -1; font-size:0.78rem; color:var(--text-soft); }
+  @media (max-width:600px){ .saved-filter{ grid-template-columns:1fr 1fr; } }
+  .saved-row.filtered-hidden{ display:none !important; }
+
   /* ---------- IMPORT PANEL ---------- */
   .import-panel{
     background:#fff; border:1px solid var(--border); border-radius:var(--radius);
@@ -610,6 +627,18 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
             <div class="f"><label>Kullanım Durumu</label>
               <select id="kullanimDurumu"><option>Boş</option><option>Kiracılı</option><option>Mülk Sahibi Oturuyor</option></select>
             </div>
+            <div class="f"><label>Isıtma</label>
+              <select id="isitma">
+                <option value="">Seçiniz</option>
+                <option>Doğalgaz (Kombi)</option>
+                <option>Doğalgaz (Merkezi)</option>
+                <option>Klima</option>
+                <option>Soba</option>
+                <option>Yerden Isıtma</option>
+                <option>Elektrikli</option>
+                <option>Yok</option>
+              </select>
+            </div>
             <div class="f"><label>Tapu Durumu</label>
               <select id="tapuDurumu"><option>Kat Mülkiyeti</option><option>Kat İrtifakı</option><option>Hisseli Tapu</option><option>Müstakil Tapu</option></select>
             </div>
@@ -917,6 +946,44 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
 
     <div class="saved-list" id="savedListWrap" style="grid-column:2;">
       <h3>Kayıtlı Portföyler (bu tarayıcıda)</h3>
+      <div class="saved-filter" id="savedFilter">
+        <div class="sf-field">
+          <label>İlçe</label>
+          <select id="sf-ilce">
+            <option value="">Tümü</option>
+            <option value="Edremit">Edremit</option>
+            <option value="Havran">Havran</option>
+            <option value="Burhaniye">Burhaniye</option>
+            <option value="İvrindi">İvrindi</option>
+            <option value="Bandırma">Bandırma</option>
+            <option value="Diğer">Diğer</option>
+          </select>
+        </div>
+        <div class="sf-field">
+          <label>Emlak Tipi</label>
+          <select id="sf-tur">
+            <option value="">Tümü</option>
+            <option value="Daire">Daire</option>
+            <option value="Villa">Villa</option>
+            <option value="Arsa">Arsa</option>
+            <option value="İşyeri">İşyeri</option>
+            <option value="Diğer">Diğer</option>
+          </select>
+        </div>
+        <div class="sf-field">
+          <label>Durum</label>
+          <select id="sf-durum">
+            <option value="">Tümü</option>
+            <option value="aktif">Aktif</option>
+            <option value="pasif">Pasif</option>
+          </select>
+        </div>
+        <div class="sf-field">
+          <label>Ara</label>
+          <input type="text" id="sf-ara" placeholder="Başlık, mahalle, danışman, no, özellik...">
+        </div>
+        <div class="sf-count" id="sf-count"></div>
+      </div>
       <div id="savedList"><p class="empty-note">Henüz kayıtlı portföy yok.</p></div>
     </div>
 
@@ -1076,8 +1143,21 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
             ilce: item.ilce || '',
             mahalle: item.mahalle || '',
             istenenFiyat: item.istenenFiyat || item.fiyat || '',
+            m2Brut: item.m2Brut || item.m2_brut || '',
             m2Net: item.m2Net || item.m2 || '',
+            m2AcikAlan: item.m2AcikAlan || '',
+            binaYasi: item.binaYasi || item.bina_yasi || '',
             odaSayisi: item.odaSayisi || item.oda || '',
+            salonSayisi: item.salonSayisi || '',
+            banyoSayisi: item.banyoSayisi || item.banyo || '',
+            wcSayisi: item.wcSayisi || '',
+            kat: item.kat || '',
+            katSayisi: item.katSayisi || '',
+            kullanimDurumu: item.kullanimDurumu || '',
+            tapuDurumu: item.tapuDurumu || '',
+            isitma: item.isitma || '',
+            ekb: item.ekb || '',
+            konutTipi: item.konutTipi || '',
             asansor: truthy(item.asansor ?? item['asansör']),
             otopark: Boolean(truthy(item.otopark) || (item.otopark && item.otopark !== 'Yok')),
             esyali: truthy(item.esyali ?? item['eşyalı']),
@@ -1164,9 +1244,19 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
       if (d.mahalle) mahalleSelect.value = d.mahalle;
 
       setVal('istenenFiyat', d.istenenFiyat);
+      setVal('m2Brut', d.m2Brut);
       setVal('m2Net', d.m2Net);
       setVal('m2AcikAlan', d.m2AcikAlan);
+      setVal('binaYasi', d.binaYasi);
       setVal('odaSayisi', d.odaSayisi || '1+0');
+      setVal('salonSayisi', d.salonSayisi);
+      setVal('banyoSayisi', d.banyoSayisi);
+      setVal('wcSayisi', d.wcSayisi);
+      setVal('kat', d.kat);
+      setVal('katSayisi', d.katSayisi);
+      setVal('kullanimDurumu', d.kullanimDurumu || 'Boş');
+      setVal('tapuDurumu', d.tapuDurumu || 'Kat Mülkiyeti');
+      setVal('isitma', d.isitma || '');
       setVal('balkonSayisi', d.balkonSayisi != null && d.balkonSayisi !== '' ? d.balkonSayisi : (d.balkon ? 1 : ''));
       setVal('otopark', d.otoparkTuru || (d.otopark ? 'Açık Otopark' : 'Yok'));
       setVal('danismanNotu', d.danismanNotu);
@@ -1175,6 +1265,7 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
       setRadio('asansor', d.asansor ? 'Var' : 'Yok');
       setRadio('esyali', d.esyali ? 'Evet' : 'Hayır');
       setRadio('krediUygun', d.krediUygun ? 'Evet' : 'Hayır');
+      setRadio('ekb', d.ekb);
       document.getElementById('dsSiteIcinde').checked = !!d.siteIcinde;
 
       setCheckedByLabels('icOzellikler', d.icOzellikler);
@@ -1219,7 +1310,13 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
           const d = JSON.parse(item.value);
           const durum = d.durum === 'pasif' ? 'pasif' : 'aktif'; // durum yoksa aktif kabul edilir
           const not = (d.danismanNotu || '').trim();
-          html += `<div class="saved-row${durum === 'pasif' ? ' pasif' : ''}">
+          const feats = [].concat(
+            d.icOzellikler || [], d.disOzellikler || [], d.muhitOzellikleri || [],
+            d.ulasimOzellikleri || [], d.manzaraOzellikleri || [], d.cephe || []
+          ).join(' ');
+          const searchBlob = [d.baslik, d.mahalle, d.danisman, d.portfoyNo, d.ilce, d.tasinmazTuru, d.isitma, feats]
+            .filter(Boolean).join(' ').toLocaleLowerCase('tr');
+          html += `<div class="saved-row${durum === 'pasif' ? ' pasif' : ''}" data-ilce="${escHtml(d.ilce || '')}" data-tur="${escHtml(d.tasinmazTuru || '')}" data-durum="${durum}" data-search="${escHtml(searchBlob)}">
             <div class="row-top">
               <div class="info"><b>${escHtml(d.baslik || d.portfoyNo || 'Portföy')}</b> — ${escHtml(d.tasinmazTuru || '')} · ${escHtml(d.ilce || '')} ${escHtml(d.mahalle || '')}
                 <div class="meta">${escHtml(d.ilanTuru || '')} · ${d.istenenFiyat ? Number(d.istenenFiyat).toLocaleString('tr-TR') + ' ₺' : 'Fiyat girilmedi'} · ${escHtml(d.danisman || 'Danışman belirtilmedi')}</div>
@@ -1236,6 +1333,7 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
         } catch(e) {}
       }
       wrap.innerHTML = html || '<p class="empty-note">Henüz kayıtlı portföy yok.</p>';
+      filterSavedRows();
       wrap.querySelectorAll('.del').forEach(btn => {
         btn.addEventListener('click', async () => {
           if (!confirm('Bu ilanı silmek istediğinize emin misiniz?')) return;
@@ -1264,6 +1362,31 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
       wrap.innerHTML = '<p class="empty-note">Kayıtlar yüklenemedi.</p>';
     }
   }
+
+  // ---- Kayıtlı Portföyler filtre çubuğu ----
+  function filterSavedRows() {
+    const ilce = document.getElementById('sf-ilce').value;
+    const tur = document.getElementById('sf-tur').value;
+    const durum = document.getElementById('sf-durum').value;
+    const ara = document.getElementById('sf-ara').value.trim().toLocaleLowerCase('tr');
+    const rows = document.querySelectorAll('#savedList .saved-row');
+    let visible = 0;
+    rows.forEach((row) => {
+      const match = (!ilce || row.dataset.ilce === ilce)
+        && (!tur || row.dataset.tur === tur)
+        && (!durum || row.dataset.durum === durum)
+        && (!ara || (row.dataset.search || '').includes(ara));
+      row.classList.toggle('filtered-hidden', !match);
+      if (match) visible++;
+    });
+    const c = document.getElementById('sf-count');
+    if (c) c.textContent = rows.length ? `${visible} / ${rows.length} portföy gösteriliyor` : '';
+  }
+  ['sf-ilce', 'sf-tur', 'sf-durum'].forEach((id) => {
+    document.getElementById(id).addEventListener('change', filterSavedRows);
+  });
+  document.getElementById('sf-ara').addEventListener('input', filterSavedRows);
+
   loadSaved();
 
   // ---- Mobil "Bölümler" açılır menüsü ----
@@ -1365,9 +1488,20 @@ Not: "asansor", "otopark", "esyali", "krediUygun", "siteIcinde" ve dizi alanlar�
       ilce: document.getElementById('ilce').value,
       mahalle: document.getElementById('mahalle').value,
       istenenFiyat: document.getElementById('istenenFiyat').value,
+      m2Brut: document.getElementById('m2Brut').value,
       m2Net: document.getElementById('m2Net').value,
       m2AcikAlan: document.getElementById('m2AcikAlan').value,
+      binaYasi: document.getElementById('binaYasi').value,
       odaSayisi: document.getElementById('odaSayisi').value,
+      salonSayisi: document.getElementById('salonSayisi').value,
+      banyoSayisi: document.getElementById('banyoSayisi').value,
+      wcSayisi: document.getElementById('wcSayisi').value,
+      kat: document.getElementById('kat').value,
+      katSayisi: document.getElementById('katSayisi').value,
+      kullanimDurumu: document.getElementById('kullanimDurumu').value,
+      tapuDurumu: document.getElementById('tapuDurumu').value,
+      isitma: document.getElementById('isitma').value,
+      ekb: radioValue('ekb'),
       konutTipi: radioLabel('konutTipi'),
       asansor: radioValue('asansor') === 'Var',
       otopark: document.getElementById('otopark').value !== 'Yok',
