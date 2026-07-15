@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İlan Detayı — Parla Gayrimenkul</title>
+<meta name="description" content="Parla Gayrimenkul ilan detayı. Edremit / Balıkesir satılık daire, villa, arsa ilanları.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231B2A3C%22/><text x=%2250%22 y=%2272%22 font-size=%2264%22 font-family=%22Arial%22 font-weight=%22900%22 fill=%22%23FFCB05%22 text-anchor=%22middle%22>P</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF; --bg-alt:#F7F7F4; --bg-panel:#EFEFEA;
+    --text:#1A2027; --text-soft:#68707B;
+    --yellow:#FFCB05; --yellow-dark:#E8B600; --yellow-soft:#FFF6D6;
+    --navy:#1B2A3C; --navy-2:#24374C;
+    --link:#0B5FA5; --green:#1E8E3E; --border:#E7E7E1; --red:#C4392B;
+    --radius:16px; --radius-sm:10px;
+    --shadow-sm:0 1px 2px rgba(27,42,60,.05), 0 2px 6px rgba(27,42,60,.06);
+    --shadow-md:0 4px 14px rgba(27,42,60,.09), 0 2px 5px rgba(27,42,60,.05);
+    --shadow-lg:0 18px 44px rgba(27,42,60,.16), 0 4px 12px rgba(27,42,60,.07);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{ background:var(--bg); color:var(--text); font-family:'Inter',system-ui,Arial,sans-serif; line-height:1.55; font-size:15px; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3,h4{ font-family:'Plus Jakarta Sans','Inter',sans-serif; font-weight:700; letter-spacing:-0.015em; }
+  a{ color:inherit; text-decoration:none; }
+  img{max-width:100%; display:block;}
+  ul{ list-style:none; }
+  ::selection{ background:var(--yellow); color:var(--navy); }
+  .wrap{ max-width:1200px; margin:0 auto; padding:0 24px; }
+  @media (max-width:640px){ .wrap{padding:0 16px;} }
+
+  header{ background:rgba(255,255,255,0.94); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; box-shadow:0 1px 12px rgba(27,42,60,.05); }
+  .head-row{ display:flex; align-items:center; gap:28px; height:72px; }
+  .logo{ font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:1.55rem; letter-spacing:-0.02em; color:var(--navy); white-space:nowrap; }
+  .logo span{ color:var(--yellow-dark); }
+  .navlinks{ display:flex; align-items:center; gap:4px; flex:1; }
+  .navlinks a{ font-size:0.86rem; font-weight:500; color:var(--text-soft); white-space:nowrap; padding:8px 12px; border-radius:999px; transition:color .2s, background .2s; }
+  .navlinks a:hover{ color:var(--navy); background:var(--bg-alt); }
+  .head-phone{ font-weight:700; color:var(--navy); font-size:0.9rem; }
+  @media (max-width:920px){ .navlinks{ display:none; } .head-phone{ display:none; } }
+
+  .crumbs{ display:flex; flex-wrap:wrap; gap:6px; font-size:0.78rem; color:var(--text-soft); padding:22px 0 0; }
+  .crumbs a{ color:var(--link); }
+  .crumbs a:hover{ text-decoration:underline; }
+  .crumbs .sep{ color:var(--border); }
+  .crumbs .cur{ color:var(--text); font-weight:600; }
+
+  .detail-title{ font-size:clamp(1.3rem,2.4vw,1.7rem); color:var(--navy); font-weight:800; letter-spacing:-0.02em; margin:14px 0 20px; }
+
+  .detail-grid{ display:grid; grid-template-columns:1fr 340px; gap:28px; align-items:start; padding-bottom:64px; }
+  @media (max-width:900px){ .detail-grid{ grid-template-columns:1fr; } }
+
+  .gallery-main{ position:relative; border-radius:var(--radius); overflow:hidden; background:var(--bg-panel); aspect-ratio:4/3; }
+  .gallery-main img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .gallery-main .plan{ position:absolute; inset:24px; border:1px solid #C7C7C0; }
+  .gallery-main .plan::before, .gallery-main .plan::after{ content:''; position:absolute; background:#C7C7C0; }
+  .gallery-main .plan::before{ top:0; bottom:0; left:40%; width:1px; }
+  .gallery-main .plan::after{ left:0; right:0; top:55%; height:1px; }
+  .l-badge{ position:absolute; top:14px; left:14px; z-index:2; font-size:0.64rem; font-weight:700; letter-spacing:0.07em; padding:5px 11px; border-radius:999px; box-shadow:0 2px 8px rgba(0,0,0,0.18); }
+  .badge-sale{ background:var(--green); color:#fff; }
+  .badge-rent{ background:var(--link); color:#fff; }
+  .g-nav{ position:absolute; top:50%; transform:translateY(-50%); width:40px; height:40px; border:none; background:rgba(255,255,255,0.92); color:var(--navy); font-size:1.2rem; cursor:pointer; border-radius:50%; z-index:2; box-shadow:0 2px 10px rgba(0,0,0,0.22); transition:transform .2s, background .2s; }
+  .g-nav:hover{ background:#fff; transform:translateY(-50%) scale(1.08); }
+  .g-nav.prev{ left:12px; } .g-nav.next{ right:12px; }
+  .g-count{ position:absolute; bottom:12px; right:12px; background:rgba(16,22,30,0.6); color:#fff; font-size:0.72rem; font-weight:500; padding:4px 11px; border-radius:999px; z-index:2; }
+  .thumbs{ display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-top:10px; }
+  @media (max-width:640px){ .thumbs{ grid-template-columns:repeat(4,1fr); } }
+  .thumbs button{ padding:0; border:2px solid transparent; border-radius:10px; overflow:hidden; cursor:pointer; background:none; aspect-ratio:4/3; }
+  .thumbs button.active{ border-color:var(--yellow); }
+  .thumbs img{ width:100%; height:100%; object-fit:cover; opacity:.75; }
+  .thumbs button.active img{ opacity:1; }
+
+  .detail-sec{ font-size:1.1rem; color:var(--navy); font-weight:800; margin:28px 0 14px; }
+  .detail-desc{ font-size:0.9rem; color:var(--text); line-height:1.65; white-space:pre-line; margin-bottom:22px; }
+
+  .spec-table{ border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:#fff; }
+  .spec-table .row{ display:grid; grid-template-columns:1fr 1.4fr; gap:12px; padding:11px 18px; font-size:0.86rem; border-top:1px solid var(--border); }
+  .spec-table .row:first-child{ border-top:none; }
+  .spec-table .row:nth-child(even){ background:var(--bg-alt); }
+  .spec-table .k{ color:var(--text-soft); }
+  .spec-table .v{ color:var(--text); font-weight:600; }
+
+  aside{ position:sticky; top:92px; display:flex; flex-direction:column; gap:16px; }
+  @media (max-width:900px){ aside{ position:static; } }
+  .cta-card{ background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:22px 22px 24px; box-shadow:var(--shadow-md); }
+  .cta-card .amount{ font-family:'Plus Jakarta Sans'; font-weight:800; font-size:1.6rem; color:var(--navy); letter-spacing:-0.02em; }
+  .cta-card .loc{ font-size:0.84rem; color:var(--text-soft); margin:4px 0 18px; }
+  .cta-btns{ display:flex; flex-direction:column; gap:10px; }
+  .cta-btns a{ text-align:center; font-weight:700; font-size:0.9rem; padding:13px 0; border-radius:999px; transition:background .2s, box-shadow .2s; }
+  .btn-call{ background:var(--yellow); color:var(--navy); }
+  .btn-call:hover{ background:var(--yellow-dark); box-shadow:var(--shadow-md); }
+  .btn-wa{ background:var(--green); color:#fff; }
+  .btn-wa:hover{ background:#177232; box-shadow:var(--shadow-md); }
+  .btn-msg{ border:1.5px solid var(--navy); color:var(--navy); font-weight:600; }
+  .btn-msg:hover{ background:var(--navy); color:#fff; }
+  .cta-meta{ display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text-soft); border-top:1px solid var(--border); margin-top:18px; padding-top:14px; }
+  .cta-meta b{ color:var(--text); }
+
+  .trust-card{ background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; }
+  .trust-card .t{ font-family:'Plus Jakarta Sans','Inter',sans-serif; font-size:0.74rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:var(--navy); display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .trust-card .t::before{ content:''; width:16px; height:4px; border-radius:2px; background:var(--yellow); flex-shrink:0; }
+  .trust-card p{ font-size:0.8rem; color:var(--text-soft); line-height:1.55; }
+  .trust-card b{ color:var(--text); }
+
+  .similar{ background:var(--bg-alt); padding:64px 0; }
+  .sec-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
+  .sec-head h2{ font-size:clamp(1.35rem,2.4vw,1.7rem); color:var(--navy); font-weight:800; letter-spacing:-0.02em; }
+  .sec-head h2::after{ content:''; display:block; width:44px; height:4px; border-radius:2px; background:var(--yellow); margin-top:10px; }
+  .sec-link{ font-size:0.84rem; color:var(--navy); font-weight:600; padding:8px 14px; border-radius:999px; border:1px solid var(--border); transition:border-color .2s, background .2s; }
+  .sec-link:hover{ border-color:var(--yellow-dark); background:var(--yellow-soft); }
+  .listing-table{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
+  @media (max-width:1020px){ .listing-table{ grid-template-columns:repeat(2,1fr); gap:20px; } }
+  @media (max-width:640px){ .listing-table{ grid-template-columns:1fr; gap:18px; } }
+  .listing-row{ position:relative; display:flex; flex-direction:column; background:#fff; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-sm); cursor:pointer; transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+  .listing-row:hover{ transform:translateY(-5px); box-shadow:var(--shadow-lg); border-color:rgba(232,182,0,0.45); }
+  .l-thumb{ position:relative; width:100%; aspect-ratio:4/3; background:var(--bg-panel); overflow:hidden; flex-shrink:0; }
+  .l-thumb img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .45s ease; }
+  .listing-row:hover .l-thumb img{ transform:scale(1.05); }
+  .l-thumb .plan{ position:absolute; inset:22px; border:1px solid #C7C7C0; }
+  .l-thumb .plan::before, .l-thumb .plan::after{ content:''; position:absolute; background:#C7C7C0; }
+  .l-thumb .plan::before{ top:0; bottom:0; left:40%; width:1px; }
+  .l-thumb .plan::after{ left:0; right:0; top:55%; height:1px; }
+  .l-info{ padding:16px 18px 4px; flex:1; }
+  .l-info h3{ font-size:1rem; color:var(--navy); font-weight:600; margin-bottom:7px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .l-info .loc{ font-size:0.78rem; color:var(--text-soft); margin-bottom:11px; }
+  .l-price{ display:flex; justify-content:space-between; align-items:center; gap:10px; padding:14px 18px 16px; margin-top:12px; border-top:1px solid var(--border); }
+  .l-price .amount{ font-family:'Plus Jakarta Sans'; font-weight:800; font-size:1.2rem; color:var(--navy); letter-spacing:-0.02em; white-space:nowrap; }
+
+  footer{ background:#141F2D; color:#9FB0C2; padding:28px 0; margin-top:0; }
+  .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; font-size:0.76rem; }
+  .foot-row a:hover{ color:#fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head-row">
+    <a href="index.html" class="logo">PARLA<span>.</span></a>
+    <div class="navlinks">
+      <a href="index.html#portfoy">Satılık</a>
+      <a href="index.html#portfoy">Kiralık</a>
+      <a href="danismanlar.html">Danışmanlarımız</a>
+      <a href="index.html#neden-biz">Kurumsal</a>
+      <a href="index.html#iletisim">İletişim</a>
+    </div>
+    <div class="head-phone">0531 736 64 00</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="crumbs" id="crumbs"></nav>
+  <h1 class="detail-title" id="dTitle">İlan yükleniyor…</h1>
+</div>
+
+<div class="wrap detail-grid">
+  <div style="min-width:0;">
+    <div class="gallery-main" id="gMain">
+      <div class="plan" id="gPlan"></div>
+      <img id="gImg" style="display:none;" alt="">
+      <span class="l-badge badge-sale" id="dBadge">SATILIK</span>
+      <button class="g-nav prev" id="gPrev" aria-label="Önceki fotoğraf">‹</button>
+      <button class="g-nav next" id="gNext" aria-label="Sonraki fotoğraf">›</button>
+      <div class="g-count" id="gCount"></div>
+    </div>
+    <div class="thumbs" id="gThumbs"></div>
+
+    <h2 class="detail-sec">İlan Detayları</h2>
+    <p class="detail-desc" id="dDesc"></p>
+
+    <h2 class="detail-sec">Özellikler</h2>
+    <div class="spec-table" id="dSpecs"></div>
+  </div>
+
+  <aside>
+    <div class="cta-card">
+      <div class="amount" id="dPrice"></div>
+      <div class="loc" id="dLoc"></div>
+      <div class="cta-btns">
+        <a href="tel:05317366400" class="btn-call">Hemen Arayın</a>
+        <a href="#" class="btn-wa" id="waBtn">7/24 WhatsApp</a>
+        <a href="index.html#iletisim" class="btn-msg">Mesaj Gönder</a>
+      </div>
+      <div class="cta-meta">
+        <span>İlan No <b id="dNo"></b></span>
+        <span id="dDate"></span>
+      </div>
+    </div>
+    <div class="trust-card">
+      <div class="t">Doğrulanmış İlan</div>
+      <p>Sorumlu Emlak Taşınmaz Yetki Belge No: <b>1001719</b>. Tapu, imar ve ipotek durumu ilan yayınlanmadan önce doğrulanmıştır.</p>
+    </div>
+  </aside>
+</div>
+
+<section class="similar">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Benzer İlanlar</h2>
+      <a href="index.html#portfoy" class="sec-link">Tüm ilanlar →</a>
+    </div>
+    <div class="listing-table" id="similarTable"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <div>© 2026 Parla Gayrimenkul. Tüm hakları saklıdır.</div>
+    <div style="display:flex; gap:16px;"><a href="index.html">Ana Sayfa</a><a href="index.html#iletisim">İletişim</a></div>
+  </div>
+</footer>
+
+<script>
+(async function(){
+  const params = new URLSearchParams(location.search);
+  const no = params.get('no');
+  const fmt = (n) => Number(n).toLocaleString('tr-TR') + ' ₺';
+
+  let listings = [];
+  try {
+    const res = await fetch('data/listings.json');
+    listings = await res.json();
+  } catch(e) { console.error('listings.json okunamadı', e); }
+
+  const l = listings.find(x => x.portfoyNo === no) || listings[0];
+  if (!l) { document.getElementById('dTitle').textContent = 'İlan bulunamadı.'; return; }
+
+  document.title = l.baslik + ' — Parla Gayrimenkul';
+  document.getElementById('dTitle').textContent = l.baslik;
+  document.getElementById('dDesc').textContent = l.aciklama || '';
+  document.getElementById('dPrice').textContent = l.istenenFiyat ? fmt(l.istenenFiyat) : 'Fiyat için arayınız';
+  document.getElementById('dLoc').textContent = [l.il, l.ilce, l.mahalle].filter(Boolean).join(' / ');
+  document.getElementById('dNo').textContent = '#' + l.portfoyNo;
+  document.getElementById('dDate').textContent = l.ilanTarihi || '';
+  const badge = document.getElementById('dBadge');
+  badge.textContent = (l.ilanTuru || 'Satılık').toLocaleUpperCase('tr');
+  badge.className = 'l-badge ' + (l.ilanTuru === 'Kiralık' ? 'badge-rent' : 'badge-sale');
+  document.getElementById('waBtn').href =
+    'https://wa.me/905317366400?text=' + encodeURIComponent('Merhaba, ' + l.portfoyNo + " no'lu ilan hakkında bilgi almak istiyorum.");
+
+  // Breadcrumb
+  const crumbItems = [
+    '<a href="index.html">Ana Sayfa</a>',
+    '<a href="index.html#portfoy">' + (l.ilanTuru || 'Satılık') + '</a>',
+    '<a href="index.html#portfoy">' + (l.tasinmazTuru || '') + '</a>',
+    l.il ? '<a href="index.html#portfoy">' + l.il + '</a>' : '',
+    l.ilce ? '<a href="index.html#portfoy">' + l.ilce + '</a>' : '',
+    l.mahalle ? '<span class="cur">' + l.mahalle + ' Mah.</span>' : '',
+  ].filter(Boolean);
+  document.getElementById('crumbs').innerHTML = crumbItems.join('<span class="sep">›</span>');
+
+  // Spec table
+  const rows = [
+    ['Emlak Tipi', (l.ilanTuru || '') + ' ' + (l.tasinmazTuru || '')],
+    ['m² (Net)', l.m2Net],
+    ['Oda Sayısı', l.odaSayisi],
+    ['Asansör', l.asansor ? 'Var' : 'Yok'],
+    ['Otopark', l.otopark ? 'Var' : 'Yok'],
+    ['Balkon', l.balkon ? 'Var' : 'Yok'],
+    ['Eşyalı', l.esyali ? 'Evet' : 'Hayır'],
+    ['Site İçerisinde', l.siteIcinde ? 'Evet' : 'Hayır'],
+    ['Krediye Uygun', l.krediUygun ? 'Evet' : 'Hayır'],
+  ].filter(([k,v]) => v !== undefined && v !== null && v !== '');
+  document.getElementById('dSpecs').innerHTML = rows.map(([k,v]) =>
+    '<div class="row"><div class="k">' + k + '</div><div class="v">' + v + '</div></div>').join('');
+
+  // Gallery
+  const photos = (l.fotograflar || []).length ? l.fotograflar : null;
+  let idx = 0;
+  const img = document.getElementById('gImg');
+  const plan = document.getElementById('gPlan');
+  const count = document.getElementById('gCount');
+  const thumbs = document.getElementById('gThumbs');
+  function show(i){
+    if (!photos) { count.style.display='none'; document.getElementById('gPrev').style.display='none'; document.getElementById('gNext').style.display='none'; thumbs.style.display='none'; return; }
+    idx = (i + photos.length) % photos.length;
+    img.src = photos[idx]; img.style.display='block'; plan.style.display='none';
+    count.textContent = (idx+1) + ' / ' + photos.length;
+    thumbs.querySelectorAll('button').forEach((b,bi) => b.classList.toggle('active', bi === idx));
+  }
+  if (photos) {
+    thumbs.innerHTML = photos.map((p,i) =>
+      '<button aria-label="Fotoğraf ' + (i+1) + '"><img src="' + p + '" alt=""></button>').join('');
+    thumbs.querySelectorAll('button').forEach((b,i) => b.addEventListener('click', () => show(i)));
+  }
+  document.getElementById('gPrev').addEventListener('click', () => show(idx-1));
+  document.getElementById('gNext').addEventListener('click', () => show(idx+1));
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') show(idx-1);
+    if (e.key === 'ArrowRight') show(idx+1);
+  });
+  show(0);
+
+  // Benzer ilanlar: aynı ilçe veya aynı taşınmaz türü, kendisi hariç, ilk 3
+  const similar = listings.filter(x => x.portfoyNo !== l.portfoyNo &&
+    (x.ilce === l.ilce || x.tasinmazTuru === l.tasinmazTuru)).slice(0,3);
+  document.getElementById('similarTable').innerHTML = similar.map(s => {
+    const photo = (s.fotograflar || [])[0];
+    return '<a class="listing-row" href="ilan-detay.html?no=' + s.portfoyNo + '">' +
+      '<div class="l-thumb">' + (photo ? '<img src="' + photo + '" alt="">' : '<div class="plan"></div>') +
+      '<span class="l-badge ' + (s.ilanTuru === 'Kiralık' ? 'badge-rent' : 'badge-sale') + '" style="position:absolute;top:12px;left:12px;">' + (s.ilanTuru || 'Satılık').toLocaleUpperCase('tr') + '</span></div>' +
+      '<div class="l-info"><h3>' + s.baslik + '</h3><div class="loc">' + [s.mahalle, s.ilce, s.il].filter(Boolean).join(', ') + '</div></div>' +
+      '<div class="l-price"><div class="amount">' + (s.istenenFiyat ? fmt(s.istenenFiyat) : '—') + '</div></div></a>';
+  }).join('');
+})();
+</script>
+</body>
+</html>

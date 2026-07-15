@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danışmanlarımız — Parla Gayrimenkul</title>
+<meta name="description" content="Parla Gayrimenkul satış danışmanları. Edremit / Balıkesir bölgesinde uzman ekibimizle tanışın.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231B2A3C%22/><text x=%2250%22 y=%2272%22 font-size=%2264%22 font-family=%22Arial%22 font-weight=%22900%22 fill=%22%23FFCB05%22 text-anchor=%22middle%22>P</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF; --bg-alt:#F7F7F4; --bg-panel:#EFEFEA;
+    --text:#1A2027; --text-soft:#68707B;
+    --yellow:#FFCB05; --yellow-dark:#E8B600; --yellow-soft:#FFF6D6;
+    --navy:#1B2A3C; --navy-2:#24374C;
+    --link:#0B5FA5; --green:#1E8E3E; --border:#E7E7E1;
+    --radius:16px; --radius-sm:10px;
+    --shadow-sm:0 1px 2px rgba(27,42,60,.05), 0 2px 6px rgba(27,42,60,.06);
+    --shadow-md:0 4px 14px rgba(27,42,60,.09), 0 2px 5px rgba(27,42,60,.05);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Inter',system-ui,Arial,sans-serif; line-height:1.55; font-size:15px; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3{ font-family:'Plus Jakarta Sans','Inter',sans-serif; font-weight:700; letter-spacing:-0.015em; }
+  a{ color:inherit; text-decoration:none; }
+  img{max-width:100%; display:block;}
+  ::selection{ background:var(--yellow); color:var(--navy); }
+  .wrap{ max-width:1200px; margin:0 auto; padding:0 24px; }
+  @media (max-width:640px){ .wrap{padding:0 16px;} }
+
+  header{ background:rgba(255,255,255,0.94); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; box-shadow:0 1px 12px rgba(27,42,60,.05); }
+  .head-row{ display:flex; align-items:center; gap:28px; height:72px; }
+  .logo{ font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:1.55rem; letter-spacing:-0.02em; color:var(--navy); white-space:nowrap; }
+  .logo span{ color:var(--yellow-dark); }
+  .navlinks{ display:flex; align-items:center; gap:4px; flex:1; }
+  .navlinks a{ font-size:0.86rem; font-weight:500; color:var(--text-soft); white-space:nowrap; padding:8px 12px; border-radius:999px; transition:color .2s, background .2s; }
+  .navlinks a:hover{ color:var(--navy); background:var(--bg-alt); }
+  .head-phone{ font-weight:700; color:var(--navy); font-size:0.9rem; }
+  @media (max-width:920px){ .navlinks{ display:none; } .head-phone{ display:none; } }
+
+  .page-head{ background:linear-gradient(140deg,#141F2D 0%, var(--navy) 48%, #2C425A 100%); color:#fff; padding:44px 0 48px; position:relative; overflow:hidden; }
+  .page-head::before{ content:''; position:absolute; top:-220px; right:-120px; width:520px; height:520px; border-radius:50%; background:radial-gradient(circle, rgba(255,203,5,0.13), transparent 64%); pointer-events:none; }
+  .page-head .wrap{ position:relative; z-index:1; }
+  .page-head h1{ font-size:clamp(1.55rem,3vw,2.05rem); font-weight:800; letter-spacing:-0.02em; }
+  .page-head p{ color:#A9B9CA; font-size:0.94rem; margin-top:8px; }
+
+  main{ padding:48px 0 64px; }
+  .agent-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+  @media (max-width:1020px){ .agent-grid{ grid-template-columns:repeat(3,1fr); } }
+  @media (max-width:760px){ .agent-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:480px){ .agent-grid{ grid-template-columns:1fr; } }
+  .agent{ background:#fff; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-sm); transition:transform .25s ease, box-shadow .25s ease; }
+  .agent:hover{ transform:translateY(-3px); box-shadow:var(--shadow-md); }
+  .agent .photo{ position:relative; aspect-ratio:1/1; background:var(--bg-panel); overflow:hidden; }
+  .agent .photo img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .agent .photo .nophoto{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--text-soft); font-size:0.8rem; }
+  .agent .years{ position:absolute; top:12px; left:12px; background:var(--yellow); color:var(--navy); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.64rem; font-weight:800; letter-spacing:0.07em; padding:5px 11px; border-radius:999px; box-shadow:0 2px 8px rgba(0,0,0,0.18); }
+  .agent .info{ padding:16px 18px 18px; }
+  .agent h3{ font-size:1rem; color:var(--navy); font-weight:700; margin-bottom:3px; }
+  .agent .role{ font-size:0.78rem; color:var(--text-soft); margin-bottom:12px; }
+  .agent .phone{ display:inline-block; font-size:0.82rem; font-weight:700; color:var(--navy); border:1px solid var(--border); border-radius:999px; padding:8px 16px; transition:border-color .2s, background .2s; }
+  .agent .phone:hover{ border-color:var(--yellow-dark); background:var(--yellow-soft); }
+  .note{ font-size:0.78rem; color:var(--text-soft); margin-top:24px; }
+
+  footer{ background:#141F2D; color:#9FB0C2; padding:28px 0; }
+  .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; font-size:0.76rem; }
+  .foot-row a:hover{ color:#fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head-row">
+    <a href="index.html" class="logo">PARLA<span>.</span></a>
+    <div class="navlinks">
+      <a href="index.html#portfoy">Satılık</a>
+      <a href="index.html#portfoy">Kiralık</a>
+      <a href="danismanlar.html">Danışmanlarımız</a>
+      <a href="index.html#neden-biz">Kurumsal</a>
+      <a href="index.html#iletisim">İletişim</a>
+    </div>
+    <div class="head-phone">0531 736 64 00</div>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="wrap">
+    <h1>Danışmanlarımız</h1>
+    <p>Balıkesir genelinde, doğru gayrimenkulü doğru kişiyle buluşturan uzman satış danışmanlarımızla tanışın.</p>
+  </div>
+</section>
+
+<main>
+  <div class="wrap">
+    <!--
+      DANIŞMAN EKLEME / DÜZENLEME:
+      Aşağıdaki .agent bloklarını kopyalayıp çoğaltın.
+      - Fotoğraf için: <div class="nophoto">…</div> satırını silin, yerine
+        <img src="images/danismanlar/isim.jpg" alt="Ad Soyad"> ekleyin.
+      - Deneyim yılı rozetini .years içinde güncelleyin.
+      - Telefonu olmayan danışman için .phone satırını silin.
+    -->
+    <div class="agent-grid">
+      <div class="agent">
+        <div class="photo"><div class="nophoto">Fotoğraf yok</div><span class="years">6. YIL</span></div>
+        <div class="info">
+          <h3>Ad Soyad</h3>
+          <div class="role">Satış Danışmanı</div>
+          <a class="phone" href="tel:05317366400">0531 736 64 00</a>
+        </div>
+      </div>
+      <div class="agent">
+        <div class="photo"><div class="nophoto">Fotoğraf yok</div><span class="years">4. YIL</span></div>
+        <div class="info">
+          <h3>Ad Soyad</h3>
+          <div class="role">Satış Danışmanı</div>
+          <a class="phone" href="tel:05317366400">0531 736 64 00</a>
+        </div>
+      </div>
+      <div class="agent">
+        <div class="photo"><div class="nophoto">Fotoğraf yok</div><span class="years">2. YIL</span></div>
+        <div class="info">
+          <h3>Ad Soyad</h3>
+          <div class="role">Satış Danışmanı</div>
+        </div>
+      </div>
+      <div class="agent">
+        <div class="photo"><div class="nophoto">Fotoğraf yok</div><span class="years">1. YIL</span></div>
+        <div class="info">
+          <h3>Ad Soyad</h3>
+          <div class="role">Satış Danışmanı</div>
+        </div>
+      </div>
+    </div>
+    <p class="note">Not: Kartlardaki isim ve fotoğraflar örnektir — bu dosyadaki yorum satırında anlatıldığı gibi gerçek danışman bilgilerinizle güncelleyin.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot-row">
+    <div>© 2026 Parla Gayrimenkul. Tüm hakları saklıdır.</div>
+    <div style="display:flex; gap:16px;"><a href="index.html">Ana Sayfa</a><a href="index.html#iletisim">İletişim</a></div>
+  </div>
+</footer>
+
+</body>
+</html>

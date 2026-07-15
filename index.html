@@ -526,6 +526,7 @@
       <a href="#portfoy">Satılık</a>
       <a href="#portfoy">Kiralık</a>
       <a href="#portfoy">Fırsat İlanları</a>
+      <a href="danismanlar.html">Danışmanlarımız</a>
       <a href="#neden-biz">Kurumsal</a>
       <a href="#subeler">Şubelerimiz</a>
       <a href="#blog">Blog</a>
@@ -1002,11 +1003,11 @@
     <div class="foot-col"><h5>Hızlı Erişim</h5><ul><li><a href="#">Ana Sayfa</a></li><li><a href="#neden-biz">Kurumsal</a></li><li><a href="#subeler">Şubelerimiz</a></li><li><a href="#blog">Blog</a></li><li><a href="#iletisim">İletişim</a></li></ul></div>
     <div class="foot-col"><h5>Mülk</h5><ul><li><a href="#portfoy">Satılık</a></li><li><a href="#portfoy">Kiralık</a></li><li><a href="#portfoy">Arsa</a></li><li><a href="#portfoy">İşyeri</a></li></ul></div>
     <div class="foot-col"><h5>Bölgeler</h5><ul><li><a href="#subeler">Edremit</a></li><li><a href="#subeler">Havran</a></li><li><a href="#subeler">Burhaniye</a></li><li><a href="#subeler">İvrindi</a></li></ul></div>
-    <div class="foot-col"><h5>Merkez Ofis</h5><p style="font-size:0.82rem; margin-bottom:8px;">Altınkum Mah. Hakimiyet Cad. No:54/B, Edremit / Balıkesir</p><p style="font-size:0.82rem; margin-bottom:8px;">info@parlagayrimenkul.com</p><p style="font-size:0.82rem;">0531 736 64 00</p></div>
+    <div class="foot-col"><h5>Merkez Ofis</h5><p style="font-size:0.82rem; margin-bottom:8px;">Altınkum Mah. Hakimiyet Cad. No:54/B, Edremit / Balıkesir</p><p style="font-size:0.82rem; margin-bottom:8px;">info@parlagayrimenkul.com</p><p style="font-size:0.82rem;">0531 736 64 00</p><a href="https://wa.me/905317366400?text=Merhaba%2C%20ilanlar%C4%B1n%C4%B1z%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum." style="display:inline-block; margin-top:12px; background:var(--green); color:#fff; font-weight:600; font-size:0.82rem; padding:9px 16px; border-radius:999px;">7/24 WhatsApp İletişim</a></div>
   </div>
   <div class="wrap foot-row">
     <div>© 2026 Parla Gayrimenkul. Tüm hakları saklıdır.</div>
-    <div style="display:flex; gap:16px;"><a href="#">Çerez Politikası</a><a href="#iletisim">İletişim</a></div>
+    <div style="display:flex; gap:16px; flex-wrap:wrap;"><a href="#">KVKK Aydınlatma Metni</a><a href="#">Gizlilik ve Çerez Politikası</a><a href="#">Kullanım Koşulları</a><a href="#iletisim">İletişim</a></div>
   </div>
 </footer>
 
@@ -1034,6 +1035,7 @@
       <div class="modal-cta">
         <a href="#iletisim" class="btn-outline" id="modalContactBtn">Bu İlan İçin Bilgi Al</a>
         <a href="tel:05317366400" class="btn-outline">Hemen Ara</a>
+        <a href="#" class="btn-outline" id="modalDetailBtn">İlan Detayı →</a>
       </div>
     </div>
   </div>
@@ -1371,6 +1373,12 @@
     modalSpecs.innerHTML = specs ? specs.innerHTML : '';
     modalPrice.textContent = price ? price.textContent : '';
     modalRef.textContent = ref ? ref.textContent : '';
+    const detailBtn = document.getElementById('modalDetailBtn');
+    if (detailBtn) {
+      const no = ref ? (ref.textContent.match(/İlan No:\s*(\S+)/) || [])[1] : '';
+      if (no && no !== '—') { detailBtn.style.display = ''; detailBtn.href = 'ilan-detay.html?no=' + encodeURIComponent(no); }
+      else { detailBtn.style.display = 'none'; }
+    }
     modalBadge.textContent = badge ? badge.textContent : '';
     modalBadge.className = 'l-badge ' + (badge ? badge.className.replace('l-badge', '').trim() : 'badge-sale');
 
@@ -1674,5 +1682,10 @@
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
 </script>
 
+<div id="cookieBar" style="position:fixed; bottom:0; left:0; right:0; z-index:250; background:#141F2D; color:#9FB0C2; display:flex; align-items:center; justify-content:center; gap:18px; padding:12px 24px; font-size:0.8rem; flex-wrap:wrap;">
+  <span>Bu site deneyiminizi iyileştirmek için çerezleri kullanır.</span>
+  <button onclick="localStorage.setItem('cookieOk','1'); document.getElementById('cookieBar').remove()" style="background:var(--yellow); color:var(--navy); border:none; font-weight:700; font-size:0.8rem; padding:8px 20px; border-radius:999px; cursor:pointer;">Tamam</button>
+</div>
+<script>if (localStorage.getItem('cookieOk')) { var cb = document.getElementById('cookieBar'); if (cb) cb.remove(); }</script>
 </body>
 </html>
